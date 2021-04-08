@@ -1,0 +1,192 @@
+{
+	"ABI version": 2,
+	"header": ["pubkey", "time", "expire"],
+	"functions": [
+		{
+			"name": "getType_response",
+			"inputs": [
+				{"name":"_answer_id","type":"uint32"}
+			],
+			"outputs": [
+				{"name":"value0","type":"uint8"}
+			]
+		},
+		{
+			"name": "createNFTWallet",
+			"inputs": [
+				{"name":"root_token","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "createNFTWallet_callback",
+			"inputs": [
+				{"name":"value0","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "getPubKey",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"pubkey","type":"uint256"}
+			]
+		},
+		{
+			"name": "approveSell",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "getBalance_callback",
+			"inputs": [
+				{"name":"value0","type":"uint128"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "getTokenId_callback",
+			"inputs": [
+				{"name":"value0","type":"uint128"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "finish",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "send_from_nftWallet",
+			"inputs": [
+				{"name":"value0","type":"uint128"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "withdraw_handler",
+			"inputs": [
+				{"name":"value0","type":"uint128"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "constructor",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "seller",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"seller","type":"address"}
+			]
+		},
+		{
+			"name": "exchanger",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"exchanger","type":"address"}
+			]
+		},
+		{
+			"name": "description",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"description","type":"bytes"}
+			]
+		},
+		{
+			"name": "wallets_root",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"wallets_root","type":"address[]"}
+			]
+		},
+		{
+			"name": "wallets",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"wallets","type":"address[]"}
+			]
+		},
+		{
+			"name": "status",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"status","type":"uint8"}
+			]
+		},
+		{
+			"name": "type_contract",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"type_contract","type":"uint8"}
+			]
+		},
+		{
+			"name": "receiver",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"receiver","type":"address"}
+			]
+		},
+		{
+			"name": "finish_time",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"finish_time","type":"uint32"}
+			]
+		},
+		{
+			"name": "commission",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"commission","type":"uint128"}
+			]
+		},
+		{
+			"name": "price",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"price","type":"uint128"}
+			]
+		},
+		{
+			"name": "tokenIdStorage",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"tokenIdStorage","type":"map(address,uint128[])"}
+			]
+		}
+	],
+	"data": [
+	],
+	"events": [
+	]
+}

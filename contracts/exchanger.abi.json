@@ -1,0 +1,189 @@
+{
+	"ABI version": 2,
+	"header": ["time"],
+	"functions": [
+		{
+			"name": "constructor",
+			"inputs": [
+				{"name":"_name","type":"bytes"},
+				{"name":"_commission","type":"uint256"},
+				{"name":"_highest_commission","type":"uint256"},
+				{"name":"_controller_code","type":"cell"},
+				{"name":"_pair_code","type":"cell"},
+				{"name":"_auction_code","type":"cell"},
+				{"name":"_changable_trusted","type":"bool"},
+				{"name":"_only_trusted","type":"bool"},
+				{"name":"_trusted","type":"address[]"},
+				{"name":"_time_limit","type":"uint32"},
+				{"name":"_withdraw_address","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "setCommission",
+			"inputs": [
+				{"name":"_commission","type":"uint256"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "setTrust",
+			"inputs": [
+				{"name":"_only_trust","type":"bool"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "addTrust",
+			"inputs": [
+				{"name":"_root_token","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "delTrust",
+			"inputs": [
+				{"name":"_root_token","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "renderHelloWorld",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"value0","type":"bytes"}
+			]
+		},
+		{
+			"name": "touch",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "sendValue",
+			"inputs": [
+				{"name":"dest","type":"address"},
+				{"name":"amount","type":"uint128"},
+				{"name":"bounce","type":"bool"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "timestamp",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"timestamp","type":"uint32"}
+			]
+		},
+		{
+			"name": "name",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"name","type":"bytes"}
+			]
+		},
+		{
+			"name": "commission",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"commission","type":"uint256"}
+			]
+		},
+		{
+			"name": "highest_commission",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"highest_commission","type":"uint256"}
+			]
+		},
+		{
+			"name": "only_trusted",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"only_trusted","type":"bool"}
+			]
+		},
+		{
+			"name": "trusted",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"trusted","type":"map(address,bool)"}
+			]
+		},
+		{
+			"name": "controller_code",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"controller_code","type":"cell"}
+			]
+		},
+		{
+			"name": "pair_code",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"pair_code","type":"cell"}
+			]
+		},
+		{
+			"name": "auction_code",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"auction_code","type":"cell"}
+			]
+		},
+		{
+			"name": "changableTrusted",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"changableTrusted","type":"bool"}
+			]
+		},
+		{
+			"name": "pairs",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"pairs","type":"address[]"}
+			]
+		},
+		{
+			"name": "time_limit",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"time_limit","type":"uint32"}
+			]
+		},
+		{
+			"name": "withdraw_address",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"withdraw_address","type":"address"}
+			]
+		}
+	],
+	"data": [
+	],
+	"events": [
+	]
+}
