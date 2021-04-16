@@ -1,0 +1,104 @@
+{
+	"ABI version": 2,
+	"header": ["pubkey", "time", "expire"],
+	"functions": [
+		{
+			"name": "constructor",
+			"inputs": [
+				{"name":"public_key","type":"uint256"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "buyNFT",
+			"inputs": [
+				{"name":"pair","type":"address"},
+				{"name":"price","type":"uint128"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "createNFTWallet_callback",
+			"inputs": [
+				{"name":"value0","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "deployNFT",
+			"inputs": [
+				{"name":"root_token","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "sendNFTToken",
+			"inputs": [
+				{"name":"wallet","type":"address"},
+				{"name":"dest","type":"address"},
+				{"name":"tokenId","type":"uint128"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "freezeMoney",
+			"inputs": [
+				{"name":"pair","type":"address"},
+				{"name":"price","type":"uint128"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "sendValue",
+			"inputs": [
+				{"name":"dest","type":"address"},
+				{"name":"amount","type":"uint128"},
+				{"name":"bounce","type":"bool"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "client",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"client","type":"uint256"}
+			]
+		},
+		{
+			"name": "lockedMoney",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"lockedMoney","type":"uint256"}
+			]
+		},
+		{
+			"name": "root_wallets",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"root_wallets","type":"address[]"}
+			]
+		},
+		{
+			"name": "wallets",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"wallets","type":"address[]"}
+			]
+		}
+	],
+	"data": [
+	],
+	"events": [
+	]
+}

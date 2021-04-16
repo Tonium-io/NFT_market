@@ -3,6 +3,27 @@
 	"header": ["pubkey", "time", "expire"],
 	"functions": [
 		{
+			"name": "constructor",
+			"inputs": [
+				{"name":"_price","type":"uint128"},
+				{"name":"_time","type":"uint64"},
+				{"name":"_seller","type":"address"},
+				{"name":"_seller_pubkey","type":"uint256"},
+				{"name":"_commission","type":"uint128"},
+				{"name":"_step","type":"uint128"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "getBet",
+			"inputs": [
+				{"name":"pubkey","type":"uint256"}
+			],
+			"outputs": [
+			]
+		},
+		{
 			"name": "getType_response",
 			"inputs": [
 				{"name":"_answer_id","type":"uint32"}
@@ -75,10 +96,11 @@
 			]
 		},
 		{
-			"name": "constructor",
+			"name": "code_controller",
 			"inputs": [
 			],
 			"outputs": [
+				{"name":"code_controller","type":"cell"}
 			]
 		},
 		{
@@ -191,6 +213,14 @@
 			],
 			"outputs": [
 				{"name":"tokenIdStorage","type":"map(address,uint128[])"}
+			]
+		},
+		{
+			"name": "step",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"step","type":"uint128"}
 			]
 		}
 	],
