@@ -46,40 +46,20 @@
 			]
 		},
 		{
+			"name": "freezeMoney",
+			"inputs": [
+				{"name":"pair","type":"address"},
+				{"name":"price","type":"uint128"}
+			],
+			"outputs": [
+			]
+		},
+		{
 			"name": "sendValue",
 			"inputs": [
 				{"name":"dest","type":"address"},
 				{"name":"amount","type":"uint128"},
 				{"name":"bounce","type":"bool"}
-			],
-			"outputs": [
-			]
-		},
-		{
-			"name": "createNFTPair",
-			"inputs": [
-				{"name":"exchanger","type":"address"},
-				{"name":"price","type":"uint128"},
-				{"name":"time","type":"uint64"}
-			],
-			"outputs": [
-			]
-		},
-		{
-			"name": "createNFTAuction",
-			"inputs": [
-				{"name":"exchanger","type":"address"},
-				{"name":"price","type":"uint128"},
-				{"name":"time","type":"uint64"},
-				{"name":"step","type":"uint128"}
-			],
-			"outputs": [
-			]
-		},
-		{
-			"name": "setCode",
-			"inputs": [
-				{"name":"newcode","type":"cell"}
 			],
 			"outputs": [
 			]
@@ -114,14 +94,6 @@
 			],
 			"outputs": [
 				{"name":"wallets","type":"address[]"}
-			]
-		},
-		{
-			"name": "m_wallets",
-			"inputs": [
-			],
-			"outputs": [
-				{"name":"m_wallets","type":"map(address,address)"}
 			]
 		}
 	],
