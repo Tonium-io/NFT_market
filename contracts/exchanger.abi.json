@@ -1,20 +1,20 @@
 {
 	"ABI version": 2,
-	"header": ["time"],
+	"header": ["pubkey", "time", "expire"],
 	"functions": [
 		{
 			"name": "constructor",
 			"inputs": [
 				{"name":"_name","type":"bytes"},
-				{"name":"_commission","type":"uint256"},
-				{"name":"_highest_commission","type":"uint256"},
+				{"name":"_commission","type":"uint128"},
+				{"name":"_highest_commission","type":"uint128"},
 				{"name":"_controller_code","type":"cell"},
 				{"name":"_pair_code","type":"cell"},
 				{"name":"_auction_code","type":"cell"},
 				{"name":"_changable_trusted","type":"bool"},
 				{"name":"_only_trusted","type":"bool"},
 				{"name":"_trusted","type":"address[]"},
-				{"name":"_time_limit","type":"uint32"},
+				{"name":"_time_limit","type":"uint64"},
 				{"name":"_withdraw_address","type":"address"}
 			],
 			"outputs": [
@@ -23,7 +23,7 @@
 		{
 			"name": "setCommission",
 			"inputs": [
-				{"name":"_commission","type":"uint256"}
+				{"name":"_commission","type":"uint128"}
 			],
 			"outputs": [
 			]
@@ -53,26 +53,38 @@
 			]
 		},
 		{
-			"name": "renderHelloWorld",
+			"name": "createNFTPairCrystall",
 			"inputs": [
-			],
-			"outputs": [
-				{"name":"value0","type":"bytes"}
-			]
-		},
-		{
-			"name": "touch",
-			"inputs": [
+				{"name":"price","type":"uint128"},
+				{"name":"time","type":"uint64"},
+				{"name":"pubkey","type":"uint256"}
 			],
 			"outputs": [
 			]
 		},
 		{
-			"name": "sendValue",
+			"name": "createNFTAuctionCrystall",
 			"inputs": [
-				{"name":"dest","type":"address"},
-				{"name":"amount","type":"uint128"},
-				{"name":"bounce","type":"bool"}
+				{"name":"price","type":"uint128"},
+				{"name":"time","type":"uint64"},
+				{"name":"step","type":"uint128"},
+				{"name":"pubkey","type":"uint256"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "addIndex",
+			"inputs": [
+				{"name":"status","type":"uint8"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "withdraw",
+			"inputs": [
+				{"name":"amount","type":"uint128"}
 			],
 			"outputs": [
 			]
@@ -98,7 +110,7 @@
 			"inputs": [
 			],
 			"outputs": [
-				{"name":"commission","type":"uint256"}
+				{"name":"commission","type":"uint128"}
 			]
 		},
 		{
@@ -162,7 +174,7 @@
 			"inputs": [
 			],
 			"outputs": [
-				{"name":"pairs","type":"address[]"}
+				{"name":"pairs","type":"map(address,uint8)"}
 			]
 		},
 		{
@@ -170,7 +182,7 @@
 			"inputs": [
 			],
 			"outputs": [
-				{"name":"time_limit","type":"uint32"}
+				{"name":"time_limit","type":"uint64"}
 			]
 		},
 		{
@@ -185,5 +197,14 @@
 	"data": [
 	],
 	"events": [
+		{
+			"name": "pair_change_status",
+			"inputs": [
+				{"name":"pair","type":"address"},
+				{"name":"status","type":"uint8"}
+			],
+			"outputs": [
+			]
+		}
 	]
 }

@@ -15,23 +15,18 @@ contract Pair {
     enum NFTPairTypes {CrystallAuction, FTAuction, CrystallPair, FTPair}
     enum StatusPair {pre_open,open,close}
     //Fields
-    TvmCell public code_controller;
     address public seller;
     uint256 public seller_pubkey;
     address public exchanger;
-    bytes public description;
     address[] public wallets_root;
     address[] public wallets;
-    address[] auth_wallets; //shoud be equal to wallets finish_time 
     StatusPair public status = StatusPair.pre_open;
     address public receiver; //should be equal to seller on start
     uint256 public receiver_pubkey;
     uint64 public finish_time;
     uint128 public commission;
     uint128 public price;
-    mapping(address=>uint128[]) public tokenIdStorage;
-    uint128 countTokens;
-    uint128 countCallback;
+    mapping(address => address) public m_wallets;
     //Modifiers
     modifier onlySeller {
         require((msg.pubkey() != 0) && (msg.pubkey() == seller_pubkey),
@@ -48,10 +43,8 @@ contract Pair {
     }
 
     modifier onlyWallets {
-        tvm.log("recieve");
-        require(search(auth_wallets,msg.sender),YOU_ARE_NOT_GOD);
+        require(search(wallets,msg.sender),YOU_ARE_NOT_GOD);
         tvm.accept();
-        tvm.log("accept");
         _;
     }
 
@@ -91,21 +84,6 @@ contract Pair {
         }
         return false;
     }
-    //Metadata
-    function getType_response() public responsible returns (NFTPairTypes) {
-        return{value: 0, bounce: true, flag: 64} type_contract;  
-    }
-
-    function getRootWallets_response() public responsible returns (address []){
-        return{value: 0, bounce: true, flag: 64} wallets_root; 
-    }
-
-    // function afterSignatureCheck(TvmSlice body, TvmCell message) private inline returns (TvmSlice) {
-    //     body.decode(uint64);
-    //     uint32 expireAt = body.decode(uint32);
-    //     require(expireAt >= now, YOU_ARE_NOT_GOD);   
-    //     return body;
-    // }
 
     //CreateNFTWallet
 
@@ -116,36 +94,20 @@ contract Pair {
     }
 
     function createNFTWallet_callback(address value0) public onlyPreOpen onlyRootWallets { 
+        m_wallets[msg.sender] = value0;
 		wallets.push(value0);
-        auth_wallets.push(value0);
     }
 
     //Approve Sell
 
     function approveSell() public onlyPreOpen onlySeller{
-        countTokens = 0;
-        countCallback = 0;
-        for (uint128 i = 0; i < wallets.length; i++) {
-            TONTokenWalletNF(wallets[i]).getBalance_response{callback: Pair.getBalance_callback}();
-        }
+        status = StatusPair.open;
+        IExchanger(exchanger).addIndex(PairState.index);
     }
 
-    function getBalance_callback(uint128 value0) public onlyWallets { 
-        
-        countTokens += value0;
-        for (uint128 i = 0; i < value0; i++) {
-            tvm.log("get token id");
-            TONTokenWalletNF(msg.sender).getTokenByIndex_response{callback: Pair.getTokenId_callback}(i);
-        }
-        
-    }
-
-    function getTokenId_callback(uint128 value0) public onlyWallets {
-        countCallback += 1;
-        tokenIdStorage[msg.sender].push(value0);
-        if (countTokens == countCallback) {
-            status = StatusPair.open;
-        }
+    function pre_finish() external onlySeller {
+        require(receiver == seller,YOU_ARE_NOT_GOD);
+        start_withdraw();
     }
     
     function finish() external onlyOpen {
@@ -157,29 +119,21 @@ contract Pair {
     function finish_tech() internal {
         status = StatusPair.close;
         start_withdraw();
+        IExchanger(exchanger).addIndex(PairState.close);
     }
 
     //Withdraw    
 
-    // function send_from_nftWallet(uint128 value0) public onlyWallets {uint128
-    function withdraw_handler(address value0) public onlyWallets {
-        // if (value0 > 0) {
-        //     for (uint128 i = 0; i < value0; i++) {
-        //         //TONTokenWalletNF(msg.sender).getTokenByIndex_response{callback: Pair.send_from_nftWallet}(i);
-        //     }
-        // }
-        start_withdraw();
-    }
-
     function start_withdraw() private inline {
-
+        uint128 balance = 10000000;
         for (uint256 wallet = 0; wallet < wallets.length; wallet++) {
-            TONTokenWalletNF(wallets[wallet]).send_all_token_by_pubkey(receiver_pubkey,receiver);
+            TONTokenWalletNF(wallets[wallet]).send_all_token_by_pubkey{flag:0,value: 0.01 ton}(receiver_pubkey,receiver);
+            balance = balance + 0.01 ton;
         }
-        if (seller != exchanger) {
-            exchanger.transfer(math.divr(price, 100) * commission,false,0);
+        if (seller != receiver) {
+            exchanger.transfer((price/ 100) * commission,false,0);
+            balance = balance + (price/ 100) * commission;
         }
-        tvm.log("Goodbye, Elliot");
-        seller.transfer(0,false,128 + 32);
+        seller.transfer(address(this).balance - balance,false,32);
     }
 }

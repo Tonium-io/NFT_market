@@ -9,40 +9,33 @@ pragma AbiHeader pubkey;
 import "./NFTPair.sol";
 import "./NFTAuction.sol";
 import "./interfaces.sol";
-// This is class that describes you smart contract.
 contract Controller {
-    // Contract can have an instance variables.
-    // In this example instance variable `timestamp` is used to store the time of `constructor` or `touch`
-    // function call
-    uint128 constant minbalance = 3 ton; 
-    uint constant YOU_ARE_NOT_GOD = 101;
+    // Errors
+    uint constant ACCESS_DENIED = 101;
     uint constant NOT_ENOUGH_MONEY = 102;
 
     uint public client;
     uint public lockedMoney = 0;
     address[] public root_wallets;
     address[] public wallets;
-    mapping(address => uint128) auction;
-    // Contract can have a `constructor` – function that will be called when contract will be deployed to the blockchain.
-    // In this example constructor adds current time to the instance variable.
-    // All contracts need call tvm.accept(); for succeeded deploy
+    mapping(address => address) public m_wallets;
 
     modifier onlyClient {
         require(msg.pubkey() == client,
-            YOU_ARE_NOT_GOD);
+            ACCESS_DENIED);
         tvm.accept();
         _;
     }
 
     modifier onlyExchanger {
         require(msg.pubkey() == tvm.pubkey(),
-            YOU_ARE_NOT_GOD);
+            ACCESS_DENIED);
         tvm.accept();
         _;
     }
 
     modifier onlyRootWallets {
-        require(search(root_wallets,msg.sender),YOU_ARE_NOT_GOD);
+        require(search(root_wallets,msg.sender),ACCESS_DENIED);
         tvm.accept();
         _;
     }
@@ -72,40 +65,32 @@ contract Controller {
     }
 
     function buyNFT(address pair, uint128 price) onlyClient public{
-        NFTPair(pair).sell{value:price}(client);
+        NFTPair(pair).sell{value:price,bounce:true}(client);
     }
     function createNFTWallet_callback(address value0) onlyRootWallets public {
+        m_wallets[msg.sender] = value0;
         wallets.push(value0);
     }
     function deployNFT(address root_token) onlyClient public {
-        RootTokenContractNF(root_token).deployWallet_response{value:1  ton, flag:64, callback: Controller.createNFTWallet_callback}(0,tvm.pubkey(), 1 ton, address(this)) ;
         root_wallets.push(root_token);
+        RootTokenContractNF(root_token).deployWallet_response{value:1  ton, flag:64, callback: Controller.createNFTWallet_callback}(0,tvm.pubkey(), 1 ton, address(this)) ;
     }
 
-    function sendNFTToken(address wallet,address dest, uint128 tokenId) onlyClient public {
+    function sendNFTToken(address wallet,address dest, uint128 tokenId) onlyClient pure public {
         TONTokenWalletNF(wallet).transfer(dest,tokenId,0);
     }
 
-    function freezeMoney(address pair, uint128 price) onlyClient public {
-        NFTAuction(pair).getBet{value:price,flag:1}(tvm.pubkey());
-    }
-
-
-
-
-    // Updates variable `timestamp` with current blockchain time.
-    // function touch() external {
-    //     // Each function that accepts external message must check that
-    //     // message is correctly signed.
-    //     require(msg.pubkey() == tvm.pubkey(), 102);
-    //     // Tells to the TVM that we accept this message.
-    //     tvm.accept();
-    //     // Update timestamp
-    //     timestamp = now;
-    // }
-
-    function sendValue(address dest, uint128 amount, bool bounce) onlyClient public {
-
+    function sendValue(address dest, uint128 amount, bool bounce) onlyClient pure public {
         dest.transfer(amount, bounce, 0);
     }
+    function createNFTPair(address exchanger, uint128 price, uint64 time) onlyClient public {
+        IExchanger(exchanger).createNFTPairCrystall{value:2 ton,flag:1}(price,time,tvm.pubkey());
+    }
+    function createNFTAuction(address exchanger, uint128 price, uint64 time, uint128 step) onlyClient public {
+        IExchanger(exchanger).createNFTAuctionCrystall{value:2 ton,flag:1}(price,time,step,tvm.pubkey());
+    }
+    function setCode(TvmCell newcode) public pure onlyClient {
+		tvm.setcode(newcode);
+		tvm.setCurrentCode(newcode);
+	}
 }
