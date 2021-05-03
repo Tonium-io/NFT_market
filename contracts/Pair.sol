@@ -1,26 +1,27 @@
 pragma ton-solidity >= 0.35.0;
-import "./interfaces.sol";
-
+import "./INFT.sol";
+import "./IPair.sol";
+import "./Variables.sol";
+import "./IExchanger.sol";
 pragma AbiHeader time;
 pragma AbiHeader expire;
 pragma AbiHeader pubkey;
 
-contract Pair {
+abstract contract Pair is BasePair{
     //Errors
     uint constant YOU_ARE_NOT_GOD = 101;
     uint constant NOT_ENOUGH_MONEY = 102;
     uint constant NOT_OPEN = 103;
     uint constant NOT_GOOD_PUBKEY = 104;
 
-    enum NFTPairTypes {CrystallAuction, FTAuction, CrystallPair, FTPair}
-    enum StatusPair {pre_open,open,close}
+    
     //Fields
     address public seller;
     uint256 public seller_pubkey;
     address public exchanger;
     address[] public wallets_root;
     address[] public wallets;
-    StatusPair public status = StatusPair.pre_open;
+    PairState public status = PairState.created;
     address public receiver; //should be equal to seller on start
     uint256 public receiver_pubkey;
     uint64 public finish_time;
@@ -65,12 +66,12 @@ contract Pair {
     }
 
     modifier onlyPreOpen {
-        require(status == StatusPair.pre_open);
+        require(status == PairState.created);
         _;
     }
 
     modifier onlyOpen {
-        require(status == StatusPair.open, NOT_OPEN);
+        require(status == PairState.index, NOT_OPEN);
         _;
     }
 
@@ -88,46 +89,48 @@ contract Pair {
     //CreateNFTWallet
 
 
-    function createNFTWallet(address root_token) onlySeller public {
-        RootTokenContractNF(root_token).deployWallet_response{value:1  ton, flag:64, callback: Pair.createNFTWallet_callback}(0,tvm.pubkey(), 1 ton, address(this)) ;
+    function createNFTWallet(address root_token) onlySeller override public {
+        BaseRootTokenContractNF(root_token).deployWallet_response{value:1  ton, flag:64, callback: Pair.createNFTWallet_callback}(0,tvm.pubkey(), 1 ton, address(this)) ;
         wallets_root.push(root_token);
     }
 
-    function createNFTWallet_callback(address value0) public onlyPreOpen onlyRootWallets { 
+    function createNFTWallet_callback(address value0) override public onlyPreOpen onlyRootWallets { 
         m_wallets[msg.sender] = value0;
 		wallets.push(value0);
     }
 
     //Approve Sell
 
-    function approveSell() public onlyPreOpen onlySeller{
-        status = StatusPair.open;
-        IExchanger(exchanger).addIndex(PairState.index);
+    function approveSell() override public onlyPreOpen onlySeller{
+        status = PairState.index;
+        BaseExchanger(exchanger).addIndex(PairState.index);
     }
 
-    function pre_finish() external onlySeller {
+    function pre_finish() override external onlySeller {
         require(receiver == seller,YOU_ARE_NOT_GOD);
         start_withdraw();
     }
     
-    function finish() external onlyOpen {
+    function finish() override external onlyOpen {
         require(finish_time < now,YOU_ARE_NOT_GOD);
         tvm.accept();
         finish_tech();
     }
 
     function finish_tech() internal {
-        status = StatusPair.close;
+        status = PairState.close;
         start_withdraw();
-        IExchanger(exchanger).addIndex(PairState.close);
+        BaseExchanger(exchanger).addIndex(PairState.close);
     }
+
+    function sell(uint256 pubkey) override virtual public;
 
     //Withdraw    
 
     function start_withdraw() private inline {
         uint128 balance = 10000000;
         for (uint256 wallet = 0; wallet < wallets.length; wallet++) {
-            TONTokenWalletNF(wallets[wallet]).send_all_token_by_pubkey{flag:0,value: 0.01 ton}(receiver_pubkey,receiver);
+            BaseTONTokenWalletNF(wallets[wallet]).send_all_token_by_pubkey{flag:0,value: 0.01 ton}(receiver_pubkey,receiver);
             balance = balance + 0.01 ton;
         }
         if (seller != receiver) {

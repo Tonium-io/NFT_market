@@ -19,7 +19,7 @@ contract NFTAuction is Pair {
         exchanger = _exchanger_address;
     }
 
-    function sell(uint256 pubkey) public onlyOpen onlyInTime{
+    function sell(uint256 pubkey) override public onlyOpen onlyInTime{
         require(msg.value >= price,NOT_ENOUGH_MONEY);
         require(pubkey != 0, 102);
         tvm.commit();

@@ -3,9 +3,11 @@ pragma AbiHeader expire;
 pragma AbiHeader pubkey;
 import "./NFTPair.sol";
 import "./NFTAuction.sol";
-contract exchanger {
+import "./IExchanger.sol";
+contract exchanger is BaseExchanger {
     //Events
     event pair_change_status(address indexed pair,PairState status);
+
     //Errors
     uint constant TRUST_ALREADY_EXIST_IN_LIST = 101;
     uint constant PAIR_ALREADY_DEPLOYED = 102;
@@ -18,7 +20,6 @@ contract exchanger {
     uint constant TIME_LIMIT = 109;
 
     //Fields
-    enum PairState {created,index,close}
     uint32 public timestamp;
     bytes public name;
     uint128 public commission;
@@ -64,47 +65,45 @@ contract exchanger {
 
     //Settings
 
-    function setCommission(uint128 _commission) public onlyOwner {
+    function setCommission(uint128 _commission) public override onlyOwner {
         require(_commission <= highest_commission, COMISSION_HIGHER_POSSIBLE_COMMISSION);
         commission = _commission;
     }
 
-    function setTrust(bool _only_trust) public onlyOwner {
+    function setTrust(bool _only_trust) public override onlyOwner {
         require(changableTrusted,TRUST_ISNT_CHANGABLE);
         only_trusted = _only_trust;
     }
 
-    function addTrust(address _root_token) public onlyOwner {
+    function addTrust(address _root_token) public override onlyOwner {
         trusted[_root_token] = true;
     }
 
-    function delTrust(address _root_token) public onlyOwner {
+    function delTrust(address _root_token) public override onlyOwner {
         delete trusted[_root_token];
     }
 
-    function createNFTPairCrystall(uint128 price, uint64 time, uint256 pubkey) public {
+    function createNFTPairCrystall(uint128 price, uint64 time, uint256 pubkey) override public {
         require(msg.value >= 2 ton,NOT_ENOUGH_MONEY);
         require(time <= now + time_limit,TIME_LIMIT);
-        address adr = new NFTPair{
-    value: 1 ton,
-    code: pair_code,
-    pubkey: pubkey
-}(price,time,msg.sender,pubkey,commission,address(this));
+        address adr = new NFTPair{value: 1.5 ton, code: pair_code, pubkey: pubkey
+        }(price,time,msg.sender,pubkey,commission,address(this));
         emit pair_change_status(adr,PairState.created);
         pairs[adr] = PairState.created;
 
     }
 
-    function createNFTAuctionCrystall(uint128 price, uint64 time, uint128 step , uint256 pubkey) public  {
+    function createNFTAuctionCrystall(uint128 price, uint64 time, uint128 step , uint256 pubkey) override public  {
         require(msg.value >= 2 ton,NOT_ENOUGH_MONEY);
         require(time <= now + time_limit,TIME_LIMIT);
-        address adr = new NFTAuction{code:auction_code,value:1.5 ton}(price,time,msg.sender,pubkey,commission,address(this), step);
+        address adr = new NFTAuction{code:auction_code,value:1.5 ton, pubkey: pubkey
+        }(price,time,msg.sender,pubkey,commission,address(this), step);
         emit pair_change_status(adr,PairState.created);
         pairs[adr] = PairState.created;
     }
 
-    function addIndex(PairState status) public{
-        pairs.at(msg.sender); // Check address
+    function addIndex(PairState status) override public{
+        require(pairs.at(msg.sender) != PairState.created,YOU_ARE_NOT_GOD); // Check address
         emit pair_change_status(msg.sender,status);
         if (status == PairState.close) {
             delete pairs[msg.sender];
@@ -113,7 +112,7 @@ contract exchanger {
             pairs[msg.sender] = status;
         }
     } 
-    function withdraw(uint128 amount) public onlyOwner{
+    function withdraw(uint128 amount) override public onlyOwner{
         withdraw_address.transfer(amount,true,0);
     }
 }
