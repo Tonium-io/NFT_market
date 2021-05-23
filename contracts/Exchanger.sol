@@ -24,12 +24,8 @@ contract exchanger is BaseExchanger {
     bytes public name;
     uint128 public commission;
     uint public highest_commission;
-    bool public only_trusted;
-    mapping(address => bool) public trusted;
-    TvmCell public controller_code;
     TvmCell public pair_code;
     TvmCell public auction_code;
-    bool public changableTrusted;
     mapping(address => PairState) public pairs;
     uint64 public time_limit;
     address public withdraw_address;
@@ -42,23 +38,17 @@ contract exchanger is BaseExchanger {
     }
 
     constructor(bytes _name,uint128 _commission, uint128 _highest_commission, 
-    TvmCell _controller_code, TvmCell _pair_code, TvmCell _auction_code, bool _changable_trusted, 
-    bool _only_trusted, address[] _trusted, uint64 _time_limit, address _withdraw_address) public {
+    TvmCell _pair_code, TvmCell _auction_code,
+    uint64 _time_limit, address _withdraw_address) public {
         require(tvm.pubkey() != 0, 101);
         require(msg.pubkey() == tvm.pubkey(), 102);
-
+        tvm.accept();
         //Set fields
         name = _name;
         commission = _commission;
         highest_commission = _highest_commission;
-        controller_code = _controller_code;
         pair_code = _pair_code;
         auction_code = _auction_code;
-        changableTrusted = _changable_trusted;
-        only_trusted = _only_trusted;
-        for (uint256 i = 0; i < _trusted.length; i++) {
-            trusted[_trusted[i]] = true;
-        }
         time_limit = _time_limit;
         withdraw_address = _withdraw_address;
     }
@@ -70,24 +60,12 @@ contract exchanger is BaseExchanger {
         commission = _commission;
     }
 
-    function setTrust(bool _only_trust) public override onlyOwner {
-        require(changableTrusted,TRUST_ISNT_CHANGABLE);
-        only_trusted = _only_trust;
-    }
-
-    function addTrust(address _root_token) public override onlyOwner {
-        trusted[_root_token] = true;
-    }
-
-    function delTrust(address _root_token) public override onlyOwner {
-        delete trusted[_root_token];
-    }
 
     function createNFTPairCrystall(uint128 price, uint64 time, uint256 pubkey) override public {
-        require(msg.value >= 2 ton,NOT_ENOUGH_MONEY);
+        require(msg.value >= 5 ton,NOT_ENOUGH_MONEY);
         require(time <= now + time_limit,TIME_LIMIT);
-        address adr = new NFTPair{value: 1.5 ton, code: pair_code, pubkey: pubkey
-        }(price,time,msg.sender,pubkey,commission,address(this));
+        address adr = new NFTPair{value: 4 ton, code: pair_code, pubkey: pubkey, varInit: {finish_time: time,seller: msg.sender,seller_pubkey:pubkey,commission:commission, exchanger: address(this)}
+        }(price);
         emit pair_change_status(adr,PairState.created);
         pairs[adr] = PairState.created;
 
@@ -96,14 +74,13 @@ contract exchanger is BaseExchanger {
     function createNFTAuctionCrystall(uint128 price, uint64 time, uint128 step , uint256 pubkey) override public  {
         require(msg.value >= 2 ton,NOT_ENOUGH_MONEY);
         require(time <= now + time_limit,TIME_LIMIT);
-        address adr = new NFTAuction{code:auction_code,value:1.5 ton, pubkey: pubkey
-        }(price,time,msg.sender,pubkey,commission,address(this), step);
+        address adr = new NFTAuction{code:auction_code,value:1.5 ton, pubkey: pubkey,varInit: {finish_time: time,seller: msg.sender,seller_pubkey:pubkey,commission:commission, exchanger: address(this)}}(price,step);
         emit pair_change_status(adr,PairState.created);
         pairs[adr] = PairState.created;
     }
 
     function addIndex(PairState status) override public{
-        require(pairs.at(msg.sender) != PairState.created,YOU_ARE_NOT_GOD); // Check address
+        require(pairs[msg.sender] != PairState.not_exist,YOU_ARE_NOT_GOD); // Check address
         emit pair_change_status(msg.sender,status);
         if (status == PairState.close) {
             delete pairs[msg.sender];

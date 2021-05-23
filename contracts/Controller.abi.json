@@ -5,7 +5,6 @@
 		{
 			"name": "constructor",
 			"inputs": [
-				{"name":"public_key","type":"uint256"}
 			],
 			"outputs": [
 			]

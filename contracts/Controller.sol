@@ -3,7 +3,6 @@ pragma AbiHeader expire;
 pragma AbiHeader pubkey;
 import "./NFTPair.sol";
 import "./NFTAuction.sol";
-import "./interfaces.sol";
 import "./IController.sol";
 contract Controller is BaseContoller{
     // Errors
@@ -37,11 +36,11 @@ contract Controller is BaseContoller{
     }
     
 
-    constructor(uint public_key) public {
+    constructor() public {
         require(tvm.pubkey() != 0, 101);
         require(msg.pubkey() == tvm.pubkey(), 102);
         tvm.accept();
-        client = public_key;
+        client = tvm.pubkey();
     }
 
     function search(address[] _array, address _wallet) private pure returns (bool){
@@ -54,7 +53,7 @@ contract Controller is BaseContoller{
     }
 
     function buyNFT(address pair, uint128 price) onlyClient override public{
-        NFTPair(pair).sell{value:price,bounce:true}(client);
+        BasePair(pair).sell{value:price,bounce:true}(client);
     }
     function createNFTWallet_callback(address value0) onlyRootWallets override public {
         m_wallets[msg.sender] = value0;
@@ -62,21 +61,21 @@ contract Controller is BaseContoller{
     }
     function deployNFT(address root_token) onlyClient override public {
         root_wallets.push(root_token);
-        RootTokenContractNF(root_token).deployWallet_response{value:1  ton, flag:64, callback: Controller.createNFTWallet_callback}(0,tvm.pubkey(), 1 ton, address(this)) ;
+        BaseRootTokenContractNF(root_token).deployWallet_response{value:2  ton, flag:64, callback: Controller.createNFTWallet_callback}(0,tvm.pubkey(), 1 ton, address(this)) ;
     }
 
     function sendNFTToken(address wallet,address dest, uint128 tokenId) onlyClient override public {
-        TONTokenWalletNF(wallet).transfer(dest,tokenId,0);
+        BaseTONTokenWalletNF(wallet).transfer(dest,tokenId,0);
     }
 
     function sendValue(address dest, uint128 amount, bool bounce) onlyClient override public {
         dest.transfer(amount, bounce, 0);
     }
     function createNFTPair(address exchanger, uint128 price, uint64 time) onlyClient override public {
-        IExchanger(exchanger).createNFTPairCrystall{value:2 ton,flag:1}(price,time,tvm.pubkey());
+        BaseExchanger(exchanger).createNFTPairCrystall{value:5 ton,flag:1}(price,time,tvm.pubkey());
     }
     function createNFTAuction(address exchanger, uint128 price, uint64 time, uint128 step) onlyClient override public {
-        IExchanger(exchanger).createNFTAuctionCrystall{value:2 ton,flag:1}(price,time,step,tvm.pubkey());
+        BaseExchanger(exchanger).createNFTAuctionCrystall{value:5 ton,flag:1}(price,time,step,tvm.pubkey());
     }
     function setCode(TvmCell newcode) public override onlyClient {
 		tvm.setcode(newcode);

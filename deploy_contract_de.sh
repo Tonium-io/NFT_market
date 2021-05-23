@@ -41,7 +41,7 @@ echo DEPLOY DEBOT $DEBOT_ADDRESS
 #'{"Jurrors": ["0xf66a20b278b2064684b56c99baa5e2703ff7724617148a7a380fbd2133d866a4","0xf66a20b278b2064684b56c99baa5e2703ff7724617148a7a380fbd2133d866a3"], "TimeFinish": 1617942836}'
 
 ./tonos-cli --url $NETWORK deploy $DEBOT_NAME.tvc "{}" --sign $DEBOT_NAME.keys.json --abi $DEBOT_NAME.abi.json
-./tonos-cli --url $NETWORK call $DEBOT_ADDRESS createNFTWallet "{\"root_token\":\"0:ab6569a63f850617ba4e2efe7afe41cfcc4d0559c476fb97f4e8c8644bf64ee7\"}" --sign $DEBOT_NAME.keys.json --abi $DEBOT_NAME.abi.json
+./tonos-cli --url $NETWORK call $DEBOT_ADDRESS createNFTWallet "{\"root_token\":\"0:ab6569a63f850617ba4e2efe7afe41cfcc4d0559c476fb97f4e8c8644bf64ee7\",\"tokenURI\":\"0x5423\"}" --sign $DEBOT_NAME.keys.json --abi $DEBOT_NAME.abi.json
 
 echo DONE
 echo $DEBOT_ADDRESS > address.log

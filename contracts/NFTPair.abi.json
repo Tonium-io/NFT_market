@@ -5,12 +5,7 @@
 		{
 			"name": "constructor",
 			"inputs": [
-				{"name":"_price","type":"uint128"},
-				{"name":"_time","type":"uint64"},
-				{"name":"_seller","type":"address"},
-				{"name":"_seller_pubkey","type":"uint256"},
-				{"name":"_commission","type":"uint128"},
-				{"name":"_exchanger_address","type":"address"}
+				{"name":"_price","type":"uint128"}
 			],
 			"outputs": [
 			]
@@ -166,6 +161,11 @@
 		}
 	],
 	"data": [
+		{"key":1,"name":"seller","type":"address"},
+		{"key":2,"name":"seller_pubkey","type":"uint256"},
+		{"key":3,"name":"exchanger","type":"address"},
+		{"key":4,"name":"finish_time","type":"uint64"},
+		{"key":5,"name":"commission","type":"uint128"}
 	],
 	"events": [
 	]

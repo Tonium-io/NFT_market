@@ -6,17 +6,11 @@ import "./Pair.sol";
 contract NFTAuction is Pair {
     NFTPairTypes public type_contract = NFTPairTypes.CrystallAuction;
     uint128 public step;
-    constructor (uint128 _price, uint64 _time, address _seller, uint256 _seller_pubkey, uint128 _commission, address _exchanger_address, uint128 _step) public {
-        seller = _seller;
-        seller_pubkey = _seller_pubkey;
-        receiver = _seller;
-        receiver_pubkey = _seller_pubkey;
+    constructor (uint128 _price, uint128 _step) public {
         price = _price;
-        finish_time = _time;
-        seller = _seller;
-        commission = _commission;
         step = _step;
-        exchanger = _exchanger_address;
+        receiver = seller;
+        receiver_pubkey = seller_pubkey;
     }
 
     function sell(uint256 pubkey) override public onlyOpen onlyInTime{

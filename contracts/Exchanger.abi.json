@@ -8,12 +8,8 @@
 				{"name":"_name","type":"bytes"},
 				{"name":"_commission","type":"uint128"},
 				{"name":"_highest_commission","type":"uint128"},
-				{"name":"_controller_code","type":"cell"},
 				{"name":"_pair_code","type":"cell"},
 				{"name":"_auction_code","type":"cell"},
-				{"name":"_changable_trusted","type":"bool"},
-				{"name":"_only_trusted","type":"bool"},
-				{"name":"_trusted","type":"address[]"},
 				{"name":"_time_limit","type":"uint64"},
 				{"name":"_withdraw_address","type":"address"}
 			],
@@ -24,30 +20,6 @@
 			"name": "setCommission",
 			"inputs": [
 				{"name":"_commission","type":"uint128"}
-			],
-			"outputs": [
-			]
-		},
-		{
-			"name": "setTrust",
-			"inputs": [
-				{"name":"_only_trust","type":"bool"}
-			],
-			"outputs": [
-			]
-		},
-		{
-			"name": "addTrust",
-			"inputs": [
-				{"name":"_root_token","type":"address"}
-			],
-			"outputs": [
-			]
-		},
-		{
-			"name": "delTrust",
-			"inputs": [
-				{"name":"_root_token","type":"address"}
 			],
 			"outputs": [
 			]
@@ -122,30 +94,6 @@
 			]
 		},
 		{
-			"name": "only_trusted",
-			"inputs": [
-			],
-			"outputs": [
-				{"name":"only_trusted","type":"bool"}
-			]
-		},
-		{
-			"name": "trusted",
-			"inputs": [
-			],
-			"outputs": [
-				{"name":"trusted","type":"map(address,bool)"}
-			]
-		},
-		{
-			"name": "controller_code",
-			"inputs": [
-			],
-			"outputs": [
-				{"name":"controller_code","type":"cell"}
-			]
-		},
-		{
 			"name": "pair_code",
 			"inputs": [
 			],
@@ -159,14 +107,6 @@
 			],
 			"outputs": [
 				{"name":"auction_code","type":"cell"}
-			]
-		},
-		{
-			"name": "changableTrusted",
-			"inputs": [
-			],
-			"outputs": [
-				{"name":"changableTrusted","type":"bool"}
 			]
 		},
 		{

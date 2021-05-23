@@ -10,7 +10,7 @@ else
     exit
 fi
 
-DEBOT_NAME=NFT_token/RootTokenContractNF
+DEBOT_NAME=contracts/RootTokenContract
 giver=0:653b9a6452c7a982c6dc92b2da9eba832ade1c467699ebb3b43dca6d77b780dd
 #giver=0:841288ed3b55d9cdafa806807f02a0ae0c169aa5edfe88a789a6482429756a94
 function giver {
@@ -44,10 +44,8 @@ echo DEPLOY DEBOT $DEBOT_ADDRESS
 
 
 
-./tonos-cli --url $NETWORK deploy $DEBOT_NAME.tvc "{\"name\":\"5423\",\"symbol\":\"5423\",\"decimals\":0,\"root_public_key\":\"0xf66a20b278b2064684b56c99baa5e2703ff7724617148a7a380fbd2133d866a4\",\"wallet_code\":\"$CODE\",\"tokenURI\":\"5423\"}" --sign $DEBOT_NAME.keys.json --abi $DEBOT_NAME.abi.json
-#./tonos-cli --url $NETWORK call $DEBOT_ADDRESS createNFTWallet "{\"root_token\":\"Some Addr\"}" --sign $DEBOT_NAME.keys.json --abi $DEBOT_NAME.abi.json
-
-./tonos-cli --url $NETWORK call $DEBOT_ADDRESS mint "{\"tokenId\":\"1\",\"name\":\"5423\",\"data\":\"5423\",\"type\":0}" --sign $DEBOT_NAME.keys.json --abi $DEBOT_NAME.abi.json
+./tonos-cli --url $NETWORK deploy $DEBOT_NAME.tvc "{}" --sign $DEBOT_NAME.keys.json --abi $DEBOT_NAME.abi.json
+./tonos-cli --url $NETWORK call $DEBOT_ADDRESS test_fun "{\"_data\":\"aa\"}" --sign $DEBOT_NAME.keys.json --abi $DEBOT_NAME.abi.json
 
 echo DONE
 echo $DEBOT_ADDRESS > address.log

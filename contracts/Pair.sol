@@ -14,18 +14,27 @@ abstract contract Pair is BasePair{
     uint constant NOT_OPEN = 103;
     uint constant NOT_GOOD_PUBKEY = 104;
 
-    
+    // seller = _seller;
+    //     seller_pubkey = _seller_pubkey;
+    //     receiver = _seller;
+    //     receiver_pubkey = _seller_pubkey;
+    //     price = _price;
+    //     finish_time = _time;
+    //     seller = _seller;
+    //     commission = _commission;
+    //     step = _step;
+    //     exchanger = _exchanger_address;
     //Fields
-    address public seller;
-    uint256 public seller_pubkey;
-    address public exchanger;
+    address static public seller;
+    uint256 static public seller_pubkey;
+    address static public exchanger;
     address[] public wallets_root;
     address[] public wallets;
     PairState public status = PairState.created;
     address public receiver; //should be equal to seller on start
     uint256 public receiver_pubkey;
-    uint64 public finish_time;
-    uint128 public commission;
+    uint64 static public finish_time;
+    uint128 static public commission;
     uint128 public price;
     mapping(address => address) public m_wallets;
     //Modifiers
@@ -90,7 +99,7 @@ abstract contract Pair is BasePair{
 
 
     function createNFTWallet(address root_token) onlySeller override public {
-        BaseRootTokenContractNF(root_token).deployWallet_response{value:1  ton, flag:64, callback: Pair.createNFTWallet_callback}(0,tvm.pubkey(), 1 ton, address(this)) ;
+        BaseRootTokenContractNF(root_token).deployWallet_response{value:2  ton, flag:64, callback: Pair.createNFTWallet_callback}(0,tvm.pubkey(), 1 ton, address(this)) ;
         wallets_root.push(root_token);
     }
 
