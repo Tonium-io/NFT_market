@@ -35,7 +35,8 @@ abstract contract Pair is BasePair{
     uint256 public receiver_pubkey;
     uint64 static public finish_time;
     uint128 static public commission;
-    uint128 public price;
+    uint128 public m_price;
+    
     mapping(address => address) public m_wallets;
     //Modifiers
     modifier onlySeller {
@@ -143,8 +144,8 @@ abstract contract Pair is BasePair{
             balance = balance + 0.01 ton;
         }
         if (seller != receiver) {
-            exchanger.transfer((price/ 100) * commission,false,0);
-            balance = balance + (price/ 100) * commission;
+            exchanger.transfer((m_price/ 100) * commission,false,0);
+            balance = balance + (m_price/ 100) * commission;
         }
         seller.transfer(address(this).balance - balance,false,32);
     }

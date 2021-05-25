@@ -5,8 +5,6 @@
 		{
 			"name": "constructor",
 			"inputs": [
-				{"name":"_price","type":"uint128"},
-				{"name":"_step","type":"uint128"}
 			],
 			"outputs": [
 			]
@@ -137,11 +135,11 @@
 			]
 		},
 		{
-			"name": "price",
+			"name": "m_price",
 			"inputs": [
 			],
 			"outputs": [
-				{"name":"price","type":"uint128"}
+				{"name":"m_price","type":"uint128"}
 			]
 		},
 		{
@@ -167,6 +165,14 @@
 			"outputs": [
 				{"name":"step","type":"uint128"}
 			]
+		},
+		{
+			"name": "price",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"price","type":"uint128"}
+			]
 		}
 	],
 	"data": [
@@ -174,7 +180,9 @@
 		{"key":2,"name":"seller_pubkey","type":"uint256"},
 		{"key":3,"name":"exchanger","type":"address"},
 		{"key":4,"name":"finish_time","type":"uint64"},
-		{"key":5,"name":"commission","type":"uint128"}
+		{"key":5,"name":"commission","type":"uint128"},
+		{"key":6,"name":"step","type":"uint128"},
+		{"key":7,"name":"price","type":"uint128"}
 	],
 	"events": [
 	]

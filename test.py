@@ -129,73 +129,81 @@ class TestPair(unittest.TestCase):
     #     # print(Controller0.balance())
     #     # print(Pair.balance())
     
-    def test_controller_nft_auction(self):
-        #NFT Pair
-        ts4.reset_all() # reset all data
-        ts4.init('contracts', verbose = True)
-        key1 = ts4.make_keypair()
-        self.public1 = key1[1]
-        self.secret1 = key1[0]
-        Controller0 = ts4.BaseContract('Controller',dict(public_key=self.public),pubkey=self.public,private_key=self.secret,balance=250_000_000_000) # create root token
-        Controller1 = ts4.BaseContract('Controller',dict(public_key=self.public1),pubkey=self.public1,private_key=self.secret1,balance=250_000_000_000) # create root token
+    # def test_controller_nft_auction(self):
+    #     #NFT Pair
+    #     ts4.reset_all() # reset all data
+    #     ts4.init('contracts', verbose = True)
+    #     key1 = ts4.make_keypair()
+    #     self.public1 = key1[1]
+    #     self.secret1 = key1[0]
+    #     Controller0 = ts4.BaseContract('Controller',dict(),pubkey=self.public,private_key=self.secret,balance=250_000_000_000) # create root token
+    #     Controller1 = ts4.BaseContract('Controller',dict(),pubkey=self.public1,private_key=self.secret1,balance=250_000_000_000) # create root token
         
-        ts4.init('NFT_token', verbose = True)
-        code = ts4.load_code_cell('TONTokenWalletNF.tvc')
-        constructor = {
-            "name":ts4.Bytes("5423"),
-            "symbol":ts4.Bytes("5423"),
-            "tokenURI":ts4.Bytes("5423"),
-            "decimals":0,
-            "root_public_key":self.public,
-            "wallet_code":code
-        }
+    #     ts4.init('NFT_token', verbose = True)
+    #     code = ts4.load_code_cell('TONTokenWalletNF.tvc')
+    #     constructor = {
+    #         "name":ts4.Bytes("5423"),
+    #         "symbol":ts4.Bytes("5423"),
+    #         "tokenURI":ts4.Bytes("5423"),
+    #         "decimals":0,
+    #         "root_public_key":self.public,
+    #         "wallet_code":code
+    #     }
 
-        NFTtoken = ts4.BaseContract('RootTokenContractNF',constructor,pubkey=self.public,private_key=self.secret) # create root token
-        #print(NFTtoken.call_getter("getWalletAddress",dict(workchain_id=0,pubkey=self.public,nonce=ts4.Address("0:7777777777777777777777777777777777777777777777777777777777777777"))))
-        #NFTwallet = NFTtoken.call_method('deployWallet',dict(workchain_id=0,pubkey=self.public,grams=1_000_000_000,tokenId=0, wallet=Controller0.addr()),private_key=self.secret) # Deploy wallet
-        ts4.dispatch_messages()
-        NFTtoken.call_method('mint',dict(tokenId=1,name=ts4.Bytes("5423"),type=0,data=ts4.Bytes("5423")),private_key=self.secret) # mint token
+    #     NFTtoken = ts4.BaseContract('RootTokenContractNF',constructor,pubkey=self.public,private_key=self.secret) # create root token
+    #     constructor = {
+    #         "name":ts4.Bytes("5423"),
+    #         "symbol":ts4.Bytes("5423"),
+    #         "tokenURI":ts4.Bytes("5423"),
+    #         "decimals":0,
+    #         "root_public_key":self.public1,
+    #         "wallet_code":code
+    #     }
+    #     NFTtoken1 = ts4.BaseContract('RootTokenContractNF',constructor,pubkey=self.public,private_key=self.secret) # create root token
+    #     print(NFTtoken.addr,NFTtoken1.addr)
+    #     #print(NFTtoken.call_getter("getWalletAddress",dict(workchain_id=0,pubkey=self.public,nonce=ts4.Address("0:7777777777777777777777777777777777777777777777777777777777777777"))))
+    #     #NFTwallet = NFTtoken.call_method('deployWallet',dict(workchain_id=0,pubkey=self.public,grams=1_000_000_000,tokenId=0, wallet=Controller0.addr()),private_key=self.secret) # Deploy wallet
+    #     ts4.dispatch_messages()
+    #     NFTtoken.call_method('mint',dict(tokenId=1,name=ts4.Bytes("5423"),type=0,data=ts4.Bytes("5423")),private_key=self.secret) # mint token
 
-        ts4.dispatch_messages()
-        print(NFTtoken.address)
-        Controller0.call_method('deployNFT',dict(root_token=NFTtoken.address),private_key=self.secret)
-        Controller1.call_method('deployNFT',dict(root_token=NFTtoken.address),private_key=self.secret1)
-        ts4.dispatch_messages()
-        ts4.init('contracts', verbose = True)
-        Pair = ts4.BaseContract('NFTAuction', dict( _price = 10_000_000_000, _time=int(time.time()) + 100, _seller=Controller0.addr, _seller_pubkey = self.public, _commission=3, _step=5_000_000_000,_exchanger_address=ts4.Address("-1:7777777777777777777777777777777777777777777777777777777777777777")),pubkey=self.public,private_key=self.secret)
-        
-        #Create nft wallet
-        a = Pair.call_method('createNFTWallet',{'root_token':NFTtoken.addr},private_key=self.secret)
-        ts4.dispatch_messages()
-        q = Pair.call_getter('wallets')[0]
-        ts4.init('NFT_token', verbose = True)
-        wallet_pair = ts4.BaseContract('TONTokenWalletNF', {} ,  address = q)
-        NFTtoken.call_method('grant',dict(dest=wallet_pair.addr,tokenId=1,grams=0),private_key=self.secret) # give first wallet token
-        ts4.dispatch_messages()
-        #wallet_pair.call_method('transfer',dict(dest=Controller1.call_getter("wallets")[0],tokenId=1,grams=0),private_key=self.secret)
-        #time.sleep(7)
-        ts4.dispatch_messages()
-        Pair.call_method('approveSell',private_key=self.secret)
-        # print(ts4.get_balance(wallet_pair.addr))
-        #wallet_pair.call_method('transfer',dict(dest=Controller1.addr(),tokenId=1,grams=0),private_key=self.secret)
-        ts4.dispatch_messages()
-        #wallet_pair
-        #time.sleep(7)
-        controller1_pair = ts4.BaseContract('TONTokenWalletNF', {} ,  address = Controller1.call_getter("wallets")[0])
-        ts4.dispatch_messages()
-        Controller1.call_method('buyNFT',dict(pair=Pair.addr,price=105_000_000_000),private_key=self.secret1)
-        ts4.dispatch_messages()
-        print(controller1_pair.call_getter("getBalance"))
-        print(Controller0.addr)
-        print(Controller0.balance)
-        print(Pair.balance)
-        ts4.core.set_now(int(time.time()) + 2000)
-        Pair.call_method('finish')
-        ts4.dispatch_messages()
-        print(controller1_pair.call_getter("getBalance"))
-        print(Controller0.addr)
-        print(Controller0.balance)
-        print(Pair.balance)
+    #     ts4.dispatch_messages()
+    #     print(NFTtoken.address)
+    #     Controller0.call_method('deployNFT',dict(root_token=NFTtoken.address),private_key=self.secret)
+    #     Controller1.call_method('deployNFT',dict(root_token=NFTtoken.address),private_key=self.secret1)
+    #     ts4.dispatch_messages()
+    #     ts4.init('contracts', verbose = True)
+    #     Pair = ts4.BaseContract('NFTAuction', dict(),pubkey=self.public,private_key=self.secret)
+    #     ts4.dispatch_messages()
+    #     #Create nft wallet
+    #     print(Pair.call_getter("finish_time"))
+    #     a = Pair.call_method('createNFTWallet',{'root_token':NFTtoken.addr},private_key=self.secret)
+    #     ts4.dispatch_messages()
+    #     q = Pair.call_getter('wallets')[0]
+    #     ts4.init('NFT_token', verbose = True)
+    #     wallet_pair = ts4.BaseContract('TONTokenWalletNF', {} ,  address = q)
+    #     NFTtoken.call_method('grant',dict(dest=wallet_pair.addr,tokenId=1,grams=0),private_key=self.secret) # give first wallet token
+    #     ts4.dispatch_messages()
+    #     #wallet_pair.call_method('transfer',dict(dest=Controller1.call_getter("wallets")[0],tokenId=1,grams=0),private_key=self.secret)
+    #     #time.sleep(7)
+    #     ts4.dispatch_messages()
+    #     Pair.call_method('approveSell',private_key=self.secret)
+    #     # print(ts4.get_balance(wallet_pair.addr))
+    #     #wallet_pair.call_method('transfer',dict(dest=Controller1.addr(),tokenId=1,grams=0),private_key=self.secret)
+    #     ts4.dispatch_messages()
+    #     #wallet_pair
+    #     #time.sleep(7)
+    #     controller1_pair = ts4.BaseContract('TONTokenWalletNF', {} ,  address = Controller1.call_getter("wallets")[0])
+    #     ts4.dispatch_messages()
+    #     Controller1.call_method('buyNFT',dict(pair=Pair.addr,price=105_000_000_000),private_key=self.secret1)
+    #     ts4.dispatch_messages()
+    #     print(contrsellerbalance)
+    #     ts4.core.set_now(int(time.time()) + 2000)
+    #     Pair.call_method('finish')
+    #     ts4.dispatch_messages()
+    #     print(controller1_pair.call_getter("getBalance"))
+    #     print(Controller0.addr)
+    #     print(Controller0.balance)
+    #     print(Pair.balance)
 
     def test_exchanger(self):
         ts4.reset_all() # reset all data
@@ -204,10 +212,8 @@ class TestPair(unittest.TestCase):
         self.public1 = key1[1]
         self.secret1 = key1[0]
         # Prepare controllers 
-        Controller0 = ts4.BaseContract('Controller',dict(public_key=self.public),pubkey=self.public,private_key=self.secret,balance=150_000_000_000,nickname="Controller0")
-        Controller2 = ts4.BaseContract('Controller',dict(public_key=self.public1),pubkey=self.public,private_key=self.secret,balance=150_000_000_000,nickname="Controller0")
-        print("FFF",Controller2.addr,Controller0.addr)
-        Controller1 = ts4.BaseContract('Controller',dict(public_key=self.public1),pubkey=self.public1,private_key=self.secret1,balance=150_000_000_000,nickname="Controller1") 
+        Controller0 = ts4.BaseContract('Controller',dict(),pubkey=self.public,private_key=self.secret,balance=150_000_000_000,nickname="Controller0")
+        Controller1 = ts4.BaseContract('Controller',dict(),pubkey=self.public1,private_key=self.secret1,balance=150_000_000_000,nickname="Controller1") 
         data = ts4.load_data_cell('NFTPair.tvc')
         ts4.init('NFT_token', verbose = True)
         code = ts4.load_code_cell('TONTokenWalletNF.tvc')
@@ -232,7 +238,8 @@ class TestPair(unittest.TestCase):
         Controller0.call_method('deployNFT',dict(root_token=NFTtoken.address),private_key=self.secret)
         Controller1.call_method('deployNFT',dict(root_token=NFTtoken.address),private_key=self.secret1)
         ts4.dispatch_messages()
-
+        NFTwallet1 = ts4.BaseContract("TONTokenWalletNF",{},address=ts4.Address(Controller1.call_getter("m_wallets")[NFTtoken.addr].addr_))
+        print(NFTwallet1.call_getter("getBalance"))
         
         ts4.init('contracts', verbose = True)
         # Create exchanger
@@ -266,16 +273,7 @@ class TestPair(unittest.TestCase):
         ts4.dispatch_messages()
         # Check balance
         ts4.init('NFT_token', verbose = True)
-        NFTwallet1 = ts4.BaseContract("TONTokenWalletNF",{
-            "name":ts4.Bytes("5423"),
-            "symbol":ts4.Bytes("5423"),
-            "decimals":0,
-            "root_public_key":self.public,
-            "wallet_public_key":self.public1,
-            "root_address":NFTtoken.addr,
-            "wallet_code":code
-        },address=Controller1.call_getter("m_wallets")[NFTtoken.addr])
-        print(NFTwallet1.call_getter("getBalance"))
+
         # Withdraw from exchanger
         Exchanger.call_method("withdraw",dict(amount=100),private_key=self.secret)
         ts4.dispatch_messages()

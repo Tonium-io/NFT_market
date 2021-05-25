@@ -72,10 +72,10 @@ contract Controller is BaseContoller{
         dest.transfer(amount, bounce, 0);
     }
     function createNFTPair(address exchanger, uint128 price, uint64 time) onlyClient override public {
-        BaseExchanger(exchanger).createNFTPairCrystall{value:5 ton,flag:1}(price,time,tvm.pubkey());
+        BaseExchanger(exchanger).createNFTPairCrystall{value:5 ton,flag:1}(price,time,client);
     }
     function createNFTAuction(address exchanger, uint128 price, uint64 time, uint128 step) onlyClient override public {
-        BaseExchanger(exchanger).createNFTAuctionCrystall{value:5 ton,flag:1}(price,time,step,tvm.pubkey());
+        BaseExchanger(exchanger).createNFTAuctionCrystall{value:5 ton,flag:1}(price,time,step,client);
     }
     function setCode(TvmCell newcode) public override onlyClient {
 		tvm.setcode(newcode);

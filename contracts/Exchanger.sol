@@ -64,8 +64,8 @@ contract exchanger is BaseExchanger {
     function createNFTPairCrystall(uint128 price, uint64 time, uint256 pubkey) override public {
         require(msg.value >= 5 ton,NOT_ENOUGH_MONEY);
         require(time <= now + time_limit,TIME_LIMIT);
-        address adr = new NFTPair{value: 4 ton, code: pair_code, pubkey: pubkey, varInit: {finish_time: time,seller: msg.sender,seller_pubkey:pubkey,commission:commission, exchanger: address(this)}
-        }(price);
+        address adr = new NFTPair{value: 4 ton, code: pair_code, pubkey: pubkey, varInit: {finish_time: time,seller: msg.sender,seller_pubkey:pubkey,commission:commission, exchanger: address(this), price:price}
+        }();
         emit pair_change_status(adr,PairState.created);
         pairs[adr] = PairState.created;
 
@@ -74,7 +74,7 @@ contract exchanger is BaseExchanger {
     function createNFTAuctionCrystall(uint128 price, uint64 time, uint128 step , uint256 pubkey) override public  {
         require(msg.value >= 2 ton,NOT_ENOUGH_MONEY);
         require(time <= now + time_limit,TIME_LIMIT);
-        address adr = new NFTAuction{code:auction_code,value:1.5 ton, pubkey: pubkey,varInit: {finish_time: time,seller: msg.sender,seller_pubkey:pubkey,commission:commission, exchanger: address(this)}}(price,step);
+        address adr = new NFTAuction{code:auction_code,splitDepth: 15,value:1.5 ton, pubkey: pubkey,varInit: {finish_time: time,seller: msg.sender,seller_pubkey:pubkey,commission:commission, exchanger: address(this),price:price,step:step}}();
         emit pair_change_status(adr,PairState.created);
         pairs[adr] = PairState.created;
     }

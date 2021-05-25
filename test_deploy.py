@@ -113,7 +113,7 @@ print("Exchanger:",exchanger_address)
 # Deploy Controller1
 call_set = CallSet(
             function_name='constructor',
-            header=FunctionHeader(pubkey=keypair_controller1.public),input=dict(public_key=f"0x{keypair_controller1.public}"))
+            header=FunctionHeader(pubkey=keypair_controller1.public))
 encode_params = ParamsOfEncodeMessage(
             abi=controller_abi, signer=Signer.Keys(keypair_controller1), deploy_set=deploy_set_controller,
             call_set=call_set)
