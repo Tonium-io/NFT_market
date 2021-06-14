@@ -14,8 +14,7 @@ jobs:
     steps:
     - uses: actions/checkout@master
       with:
-        name: Tonium-io/NFT_token 
-        ref: refs/heads/release
+        name: Tonium-io/NFT_token
     - uses: actions/checkout@v2
     - name: Set up Python 3.9
       uses: actions/setup-python@v2
