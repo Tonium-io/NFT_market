@@ -215,7 +215,7 @@ class TestPair(unittest.TestCase):
         Controller0 = ts4.BaseContract('Controller',dict(),pubkey=self.public,private_key=self.secret,balance=150_000_000_000,nickname="Controller0")
         Controller1 = ts4.BaseContract('Controller',dict(),pubkey=self.public1,private_key=self.secret1,balance=150_000_000_000,nickname="Controller1") 
         data = ts4.load_data_cell('NFTPair.tvc')
-        ts4.init('NFT_token', verbose = True)
+        ts4.init('NFT_Token', verbose = True)
         code = ts4.load_code_cell('TONTokenWalletNF.tvc')
         constructor = {
             "name":ts4.Bytes("5423"),
@@ -272,7 +272,7 @@ class TestPair(unittest.TestCase):
         Controller1.call_method("buyNFT",dict(pair=pair.addr,price=1_000_000_000),private_key=self.secret1)
         ts4.dispatch_messages()
         # Check balance
-        ts4.init('NFT_token', verbose = True)
+        ts4.init('NFT_Token', verbose = True)
 
         # Withdraw from exchanger
         Exchanger.call_method("withdraw",dict(amount=100),private_key=self.secret)
