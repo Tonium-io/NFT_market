@@ -1,8 +1,0 @@
-Config: default
-Input arguments:
-     tvc: contracts/Pair.tvc
-      wc: None
-    keys: contracts/Pair.keys.json
-init_data: None
-is_update_tvc: None
-Error: failed to read smart contract file: No such file or directory (os error 2)
