@@ -1,3 +1,6 @@
 [submodule "NFT_token"]
 	path = NFT_token
 	url = https://notabug.org/Tonium/NFT_token.git
+[submodule "true-nft"]
+	path = true-nft
+	url = https://github.com/tonlabs/True-NFT
