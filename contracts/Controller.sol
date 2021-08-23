@@ -4,6 +4,8 @@ pragma AbiHeader pubkey;
 import "./NFTPair.sol";
 import "./NFTAuction.sol";
 import "./IController.sol";
+import "./INFTRoot.sol";
+import "./INFT.sol";
 contract Controller is BaseContoller{
     // Errors
     uint constant ACCESS_DENIED = 101;
@@ -52,33 +54,39 @@ contract Controller is BaseContoller{
         return false;
     }
 
-    function buyNFT(address pair, uint128 price) onlyClient override public{
+    function buyNFT(address pair, uint128 price) onlyClient public{
         BasePair(pair).sell{value:price,bounce:true}(client);
     }
-    function createNFTWallet_callback(address value0) onlyRootWallets override public {
-        m_wallets[msg.sender] = value0;
-        wallets.push(value0);
+    // function createNFTWallet_callback(address value0) onlyRootWallets override public {
+    //     m_wallets[msg.sender] = value0;
+    //     wallets.push(value0);
+    // }
+    function mintNFT(address rootNFT,bytes metadata) onlyClient public {
+        INftRoot(rootNFT).mintNft{value: 1.5 ton}(metadata);
     }
-    function deployNFT(address root_token) onlyClient override public {
-        root_wallets.push(root_token);
-        BaseRootTokenContractNF(root_token).deployWallet_response{value:2  ton, flag:64, callback: Controller.createNFTWallet_callback}(0,tvm.pubkey(), 1 ton, address(this)) ;
+    function transferOwnership(address dataNFT,address addrTo) onlyClient public{
+        IData(dataNFT).transferOwnership{value: 1 ton}(addrTo);
     }
+    // function deployNFT(address root_token) onlyClient override public {
+    //     root_wallets.push(root_token);
+    //     BaseRootTokenContractNF(root_token).deployWallet_response{value:2  ton, flag:64, callback: Controller.createNFTWallet_callback}(0,tvm.pubkey(), 1 ton, address(this)) ;
+    // }
 
-    function sendNFTToken(address wallet,address dest, uint128 tokenId) onlyClient override public {
-        BaseTONTokenWalletNF(wallet).transfer(dest,tokenId,0);
-    }
+    // function sendNFTToken(address wallet,address dest, uint128 tokenId) onlyClient override public {
+    //     BaseTONTokenWalletNF(wallet).transfer(dest,tokenId,0);
+    // }
 
-    function sendValue(address dest, uint128 amount, bool bounce) onlyClient override public {
-        dest.transfer(amount, bounce, 0);
-    }
-    function createNFTPair(address exchanger, uint128 price, uint64 time) onlyClient override public {
+    // function sendValue(address dest, uint128 amount, bool bounce) onlyClient override public {
+    //     dest.transfer(amount, bounce, 0);
+    // }
+    function createNFTPair(address exchanger, uint128 price, uint64 time) onlyClient public {
         BaseExchanger(exchanger).createNFTPairCrystall{value:5 ton,flag:1}(price,time,client);
     }
-    function createNFTAuction(address exchanger, uint128 price, uint64 time, uint128 step) onlyClient override public {
-        BaseExchanger(exchanger).createNFTAuctionCrystall{value:5 ton,flag:1}(price,time,step,client);
-    }
-    function setCode(TvmCell newcode) public override onlyClient {
-		tvm.setcode(newcode);
-		tvm.setCurrentCode(newcode);
-	}
+    // function createNFTAuction(address exchanger, uint128 price, uint64 time, uint128 step) onlyClient override public {
+    //     BaseExchanger(exchanger).createNFTAuctionCrystall{value:5 ton,flag:1}(price,time,step,client);
+    // }
+    // function setCode(TvmCell newcode) public override onlyClient {
+	// 	tvm.setcode(newcode);
+	// 	tvm.setCurrentCode(newcode);
+	// }
 }

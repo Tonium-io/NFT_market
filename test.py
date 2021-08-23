@@ -215,31 +215,26 @@ class TestPair(unittest.TestCase):
         Controller0 = ts4.BaseContract('Controller',dict(),pubkey=self.public,private_key=self.secret,balance=150_000_000_000,nickname="Controller0")
         Controller1 = ts4.BaseContract('Controller',dict(),pubkey=self.public1,private_key=self.secret1,balance=150_000_000_000,nickname="Controller1") 
         data = ts4.load_data_cell('NFTPair.tvc')
-        ts4.init('NFT_Token', verbose = True)
-        code = ts4.load_code_cell('TONTokenWalletNF.tvc')
+        ts4.init('true-nft/components/true-nft-core/build', verbose = True)
+        codeIndex = ts4.load_code_cell('Index.tvc')
+        codeData = ts4.load_code_cell('Data.tvc')
         constructor = {
-            "name":ts4.Bytes("5423"),
-            "symbol":ts4.Bytes("5423"),
-            "tokenURI":ts4.Bytes("5423"),
-            "decimals":0,
-            "root_public_key":self.public,
-            "wallet_code":code
+            "codeIndex":codeIndex,
+            "codeData":codeData
+
         }
         # Create root token
-        NFTtoken = ts4.BaseContract('RootTokenContractNF',constructor,pubkey=self.public,private_key=self.secret,nickname="NFT root token") 
+        NFTtoken = ts4.BaseContract('NftRoot',constructor,pubkey=self.public,private_key=self.secret,nickname="NFT root token") 
 
         ts4.dispatch_messages()
         # Mint token for granting
-        NFTtoken.call_method('mint',dict(tokenId=1,name=ts4.Bytes("5423"),type=0,data=ts4.Bytes("5423")),private_key=self.secret) 
+        Controller0.call_method("mintNFT",dict(metadata=ts4.Bytes("1234"),rootNFT=NFTtoken.addr),private_key=self.secret)
+        # NFTtoken.call_method('mintNft',dict(metadata=ts4.Bytes("1234")),private_key=self.secret) 
 
         ts4.dispatch_messages()
         print(NFTtoken.address)
         # Deploy nft wallet for controllers
-        Controller0.call_method('deployNFT',dict(root_token=NFTtoken.address),private_key=self.secret)
-        Controller1.call_method('deployNFT',dict(root_token=NFTtoken.address),private_key=self.secret1)
         ts4.dispatch_messages()
-        NFTwallet1 = ts4.BaseContract("TONTokenWalletNF",{},address=ts4.Address(Controller1.call_getter("m_wallets")[NFTtoken.addr].addr_))
-        print(NFTwallet1.call_getter("getBalance"))
         
         ts4.init('contracts', verbose = True)
         # Create exchanger
@@ -247,23 +242,19 @@ class TestPair(unittest.TestCase):
         _time_limit=60 * 60 * 48, _withdraw_address=ts4.Address("-1:7777777777777777777777777777777777777777777777777777777777777777")),pubkey=self.public,private_key=self.secret,nickname="Exchanger")
         ts4.dispatch_messages()
         _time = int(time.time()) + 1000
-        # Create pair for controller0
         Controller0.call_method("createNFTPair",dict(exchanger=Exchanger.addr,price=1_000_000_000,time=_time),private_key=self.secret)
-        ts4.dispatch_messages()
-        # Grant token to controller0
-
-        NFTtoken.call_method('grant',dict(dest=Controller0.call_getter("m_wallets")[NFTtoken.addr],tokenId=1,grams=0),private_key=self.secret) # give first wallet token
         ts4.dispatch_messages()
         a = list(Exchanger.call_getter("pairs"))[0]
         ts4.ensure_address(a)
-        # Wrap nft pair
         pair = ts4.BaseContract('NFTPair',dict(_price=1_000_000_000,_time=_time,_seller=Controller0.address,_seller_pubkey=self.public,_commission=EXCHANGER_COMMISSION,_exchanger_address=Exchanger.address),pubkey=self.public,address=a,nickname="Pair")
         ts4.dispatch_messages()
-        # Create nft wallet on pair
-        pair.call_method("createNFTWallet",dict(root_token=NFTtoken.addr),private_key=self.secret)
-        ts4.dispatch_messages()
+        # Get token addr
+        num = NFTtoken.call_getter("_totalMinted",dict())
+        print(num)
+        addr = NFTtoken.call_getter("resolveData",dict(addrRoot=NFTtoken.addr,id=num - 1))
+        print(addr)
         # Send token to pair
-        Controller0.call_method("sendNFTToken",dict(wallet=Controller0.call_getter("m_wallets")[NFTtoken.addr],dest=pair.call_getter("m_wallets")[NFTtoken.addr],tokenId=1),private_key=self.secret)
+        Controller0.call_method("transferOwnership",dict(dataNFT=addr,addrTo=pair.addr),private_key=self.secret)
         ts4.dispatch_messages()
         # Approve sell
         pair.call_method("approveSell",private_key=self.secret)

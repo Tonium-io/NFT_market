@@ -28,7 +28,6 @@ abstract contract Pair is BasePair{
     address static public seller;
     uint256 static public seller_pubkey;
     address static public exchanger;
-    address[] public wallets_root;
     address[] public wallets;
     PairState public status = PairState.created;
     address public receiver; //should be equal to seller on start
@@ -59,11 +58,7 @@ abstract contract Pair is BasePair{
         _;
     }
 
-    modifier onlyRootWallets {
-        require(search(wallets_root,msg.sender),YOU_ARE_NOT_GOD);
-        tvm.accept();
-        _;
-    }
+    
 
     modifier onlyInTime {
         if (finish_time < now) {
