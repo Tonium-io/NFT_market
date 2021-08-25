@@ -1,3 +1,3 @@
 [submodule "true-nft"]
 	path = true-nft
-	url = https://github.com/tonlabs/True-NFT
+	url = git://github.com/Tonium-io/true-nft.git
