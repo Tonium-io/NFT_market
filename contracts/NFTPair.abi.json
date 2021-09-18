@@ -18,17 +18,9 @@
 			]
 		},
 		{
-			"name": "createNFTWallet",
+			"name": "addNewToken",
 			"inputs": [
-				{"name":"root_token","type":"address"}
-			],
-			"outputs": [
-			]
-		},
-		{
-			"name": "createNFTWallet_callback",
-			"inputs": [
-				{"name":"value0","type":"address"}
+				{"name":"token_addr","type":"address"}
 			],
 			"outputs": [
 			]
@@ -76,14 +68,6 @@
 			],
 			"outputs": [
 				{"name":"exchanger","type":"address"}
-			]
-		},
-		{
-			"name": "wallets_root",
-			"inputs": [
-			],
-			"outputs": [
-				{"name":"wallets_root","type":"address[]"}
 			]
 		},
 		{

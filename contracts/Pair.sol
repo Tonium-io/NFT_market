@@ -28,7 +28,6 @@ abstract contract Pair is BasePair{
     address static public seller;
     uint256 static public seller_pubkey;
     address static public exchanger;
-    address[] public wallets_root;
     address[] public wallets;
     PairState public status = PairState.created;
     address public receiver; //should be equal to seller on start
@@ -59,11 +58,7 @@ abstract contract Pair is BasePair{
         _;
     }
 
-    modifier onlyRootWallets {
-        require(search(wallets_root,msg.sender),YOU_ARE_NOT_GOD);
-        tvm.accept();
-        _;
-    }
+    
 
     modifier onlyInTime {
         if (finish_time < now) {
@@ -99,16 +94,15 @@ abstract contract Pair is BasePair{
     //CreateNFTWallet
 
 
-    function createNFTWallet(address root_token) onlySeller override public {
-        BaseRootTokenContractNF(root_token).deployWallet_response{value:2  ton, flag:64, callback: Pair.createNFTWallet_callback}(0,tvm.pubkey(), 1 ton, address(this)) ;
-        wallets_root.push(root_token);
+    function addNewToken(address token_addr) onlySeller override public {
+        wallets.push(token_addr); // IMPORTANT TO CHECK THAT address(this) == token_addr.getOwner()
     }
 
-    function createNFTWallet_callback(address value0) override public onlyPreOpen onlyRootWallets { 
-        m_wallets[msg.sender] = value0;
-		wallets.push(value0);
-    }
+    //TODO delete wallets_root
+    // rewrite tests
+    // rewrite controller
 
+    
     //Approve Sell
 
     function approveSell() override public onlyPreOpen onlySeller{
@@ -140,8 +134,8 @@ abstract contract Pair is BasePair{
     function start_withdraw() private inline {
         uint128 balance = 10000000;
         for (uint256 wallet = 0; wallet < wallets.length; wallet++) {
-            BaseTONTokenWalletNF(wallets[wallet]).send_all_token_by_pubkey{flag:0,value: 0.01 ton}(receiver_pubkey,receiver);
-            balance = balance + 0.01 ton;
+            IData(wallets[wallet]).transferOwnership{flag:1,value: 1 ton}(receiver);
+            balance = balance + 1 ton;
         }
         if (seller != receiver) {
             exchanger.transfer((m_price/ 100) * commission,false,0);

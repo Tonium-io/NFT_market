@@ -1,5 +1,6 @@
 {
 	"ABI version": 2,
+	"version": "2.1",
 	"header": ["pubkey", "time", "expire"],
 	"functions": [
 		{
@@ -19,27 +20,19 @@
 			]
 		},
 		{
-			"name": "createNFTWallet_callback",
+			"name": "mintNFT",
 			"inputs": [
-				{"name":"value0","type":"address"}
+				{"name":"rootNFT","type":"address"},
+				{"name":"metadata","type":"bytes"}
 			],
 			"outputs": [
 			]
 		},
 		{
-			"name": "deployNFT",
+			"name": "transferOwnership",
 			"inputs": [
-				{"name":"root_token","type":"address"}
-			],
-			"outputs": [
-			]
-		},
-		{
-			"name": "sendNFTToken",
-			"inputs": [
-				{"name":"wallet","type":"address"},
-				{"name":"dest","type":"address"},
-				{"name":"tokenId","type":"uint128"}
+				{"name":"dataNFT","type":"address"},
+				{"name":"addrTo","type":"address"}
 			],
 			"outputs": [
 			]
@@ -127,5 +120,15 @@
 	"data": [
 	],
 	"events": [
+	],
+	"fields": [
+		{"name":"_pubkey","type":"uint256"},
+		{"name":"_timestamp","type":"uint64"},
+		{"name":"_constructorFlag","type":"bool"},
+		{"name":"client","type":"uint256"},
+		{"name":"lockedMoney","type":"uint256"},
+		{"name":"root_wallets","type":"address[]"},
+		{"name":"wallets","type":"address[]"},
+		{"name":"m_wallets","type":"map(address,address)"}
 	]
 }
