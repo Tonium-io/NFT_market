@@ -44,8 +44,8 @@ nftpair_abi = Abi.from_path(
 nftauction_abi = Abi.from_path(
             path='contracts/NFTAuction.abi.json')
 
-#roottoken_abi = Abi.from_path(
-#            path='NFT_token/RootTokenContractNF.abi.json')
+roottoken_abi = Abi.from_path(
+           path='true-nft/components/true-nft-core/build/NFTRoot.abi.json')
 #tonwallet_abi = Abi.from_path(
 #            path='NFT_token/TONTokenWalletNF.abi.json')
 
@@ -55,44 +55,49 @@ with open('contracts/NFTPair.tvc', 'rb') as fp:
     nftPair_code =  base64.b64encode(fp.read()).decode()
 with open('contracts/NFTAuction.tvc', 'rb') as fp:     
     nftauction_code =  base64.b64encode(fp.read()).decode()
+with open('true-nft/components/true-nft-core/build/Index.tvc', 'rb') as fp:     
+    codeIndex =  base64.b64encode(fp.read()).decode()
+with open('true-nft/components/true-nft-core/build/Data.tvc', 'rb') as fp:     
+    codeData =  base64.b64encode(fp.read()).decode()
 with open('contracts/Exchanger.tvc', 'rb') as fp:     
     deploy_set_exchanger = DeploySet(tvc=base64.b64encode(fp.read()).decode())
 
 with open('contracts/Controller.tvc', 'rb') as fp:     
     deploy_set_controller = DeploySet(tvc=base64.b64encode(fp.read()).decode())
 
-#with open('NFT_token/RootTokenContractNF.tvc', 'rb') as fp:     
-#    deploy_set = DeploySet(tvc=base64.b64encode(fp.read()).decode()) 
+
+with open('true-nft/components/true-nft-core/build/NFTRoot.tvc', 'rb') as fp:     
+    deploy_set = DeploySet(tvc=base64.b64encode(fp.read()).decode()) 
 # Deploy nft token
 
-# call_set = CallSet(
-#             function_name='constructor',
-#             header=FunctionHeader(pubkey=keypair_NFTowner.public),input=dict(name="546573742045786368616e6765720a",symbol="534f4d455f53594d424f4c0a",tokenURI="736f6d652e7572692f666f722f746573740a",decimals=0,root_public_key=f"0x{keypair_NFTowner.public}",wallet_code=tonwallet_code))
-# encode_params = ParamsOfEncodeMessage(
-#             abi=roottoken_abi, signer=Signer.Keys(keypair_NFTowner), deploy_set=deploy_set,
-#             call_set=call_set)
-# encoded = client.abi.encode_message(params=encode_params)
-# NFTToken_adr = encoded.address
-# send_grams(address=encoded.address)
+call_set = CallSet(
+            function_name='constructor',
+            header=FunctionHeader(pubkey=keypair_NFTowner.public),input=dict(codeIndex=codeIndex,codeData=codeData))
+encode_params = ParamsOfEncodeMessage(
+            abi=roottoken_abi, signer=Signer.Keys(keypair_NFTowner), deploy_set=deploy_set,
+            call_set=call_set)
+encoded = client.abi.encode_message(params=encode_params)
+NFTToken_adr = encoded.address
+send_grams(address=encoded.address)
 
-# process_params = ParamsOfProcessMessage(
-#     message_encode_params=encode_params, send_events=False)
-# result = client.processing.process_message(
-#     params=process_params)
-# print("RootToken:",NFTToken_adr)
+process_params = ParamsOfProcessMessage(
+    message_encode_params=encode_params, send_events=False)
+result = client.processing.process_message(
+    params=process_params)
+print("RootToken:",NFTToken_adr)
 
-# # Mint token
-# call_set = CallSet(
-#             function_name='mint',
-#             header=FunctionHeader(pubkey=keypair_NFTowner.public),input=dict(tokenId="1",name="4e616d65206f6620736f6d6520746f6b656e0a",data="736f6d6520646174610a",type=0))
-# encode_params = ParamsOfEncodeMessage(
-#             abi=roottoken_abi, signer=Signer.Keys(keypair_NFTowner),address=NFTToken_adr,
-#             call_set=call_set)
-# process_params = ParamsOfProcessMessage(
-#     message_encode_params=encode_params, send_events=False)
-# result = client.processing.process_message(
-#     params=process_params)
-
+# Mint token
+call_set = CallSet(
+            function_name='mintNft',
+            header=FunctionHeader(pubkey=keypair_NFTowner.public),input=dict(metadata=json.loads(dict(name="Name"))))
+encode_params = ParamsOfEncodeMessage(
+            abi=roottoken_abi, signer=Signer.Keys(keypair_NFTowner),address=NFTToken_adr,
+            call_set=call_set)
+process_params = ParamsOfProcessMessage(
+    message_encode_params=encode_params, send_events=False)
+result = client.processing.process_message(
+    params=process_params)
+print('mint nft')
 
 # Deploy exchanger
 call_set = CallSet(
