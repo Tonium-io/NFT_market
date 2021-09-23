@@ -59,7 +59,7 @@ contract Controller is BaseContoller{
     }
 
     function mintNFT(address rootNFT,bytes metadata) onlyClient public {
-        INftRoot(rootNFT).mintNft{value: 1.5 ton}(metadata);
+        INftRoot(rootNFT).mintNft{value: 2.5 ton}(metadata);
     }
     function transferOwnership(address dataNFT,address addrTo) onlyClient public{
         IData(dataNFT).transferOwnership{value: 1 ton}(addrTo);

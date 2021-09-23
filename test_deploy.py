@@ -45,7 +45,7 @@ nftauction_abi = Abi.from_path(
             path='contracts/NFTAuction.abi.json')
 
 roottoken_abi = Abi.from_path(
-           path='true-nft/components/true-nft-core/build/NFTRoot.abi.json')
+           path='true-nft/components/true-nft-core/build/NftRoot.abi.json')
 #tonwallet_abi = Abi.from_path(
 #            path='NFT_token/TONTokenWalletNF.abi.json')
 
@@ -55,9 +55,9 @@ with open('contracts/NFTPair.tvc', 'rb') as fp:
     nftPair_code =  base64.b64encode(fp.read()).decode()
 with open('contracts/NFTAuction.tvc', 'rb') as fp:     
     nftauction_code =  base64.b64encode(fp.read()).decode()
-with open('true-nft/components/true-nft-core/build/Index.tvc', 'rb') as fp:     
+with open('./true-nft/components/true-nft-core/build/Index.tvc', 'rb') as fp:     
     codeIndex =  base64.b64encode(fp.read()).decode()
-with open('true-nft/components/true-nft-core/build/Data.tvc', 'rb') as fp:     
+with open('./true-nft/components/true-nft-core/build/Data.tvc', 'rb') as fp:     
     codeData =  base64.b64encode(fp.read()).decode()
 with open('contracts/Exchanger.tvc', 'rb') as fp:     
     deploy_set_exchanger = DeploySet(tvc=base64.b64encode(fp.read()).decode())
@@ -66,13 +66,31 @@ with open('contracts/Controller.tvc', 'rb') as fp:
     deploy_set_controller = DeploySet(tvc=base64.b64encode(fp.read()).decode())
 
 
-with open('true-nft/components/true-nft-core/build/NFTRoot.tvc', 'rb') as fp:     
-    deploy_set = DeploySet(tvc=base64.b64encode(fp.read()).decode()) 
-# Deploy nft token
+with open('true-nft/components/true-nft-core/build/NftRoot.tvc', 'rb') as fp:     
+    deploy_set = DeploySet(tvc=base64.b64encode(fp.read()).decode(),initial_data=dict(randomKey=123)) 
 
+
+# Deploy Controller1
 call_set = CallSet(
             function_name='constructor',
-            header=FunctionHeader(pubkey=keypair_NFTowner.public),input=dict(codeIndex=codeIndex,codeData=codeData))
+            header=FunctionHeader(pubkey=keypair_controller1.public))
+encode_params = ParamsOfEncodeMessage(
+            abi=controller_abi, signer=Signer.Keys(keypair_controller1), deploy_set=deploy_set_controller,
+            call_set=call_set)
+encoded = client.abi.encode_message(params=encode_params)
+controller1 = encoded.address
+send_grams(address=controller1)
+process_params = ParamsOfProcessMessage(
+    message_encode_params=encode_params, send_events=False)
+result = client.processing.process_message(
+    params=process_params)
+print("Controller1:",controller1)
+
+# Deploy nft token
+print(keypair_NFTowner.public)
+call_set = CallSet(
+            function_name='constructor',
+            header=FunctionHeader(pubkey="96b4ef547a294160e3d6c937d891b8cb914952980a65333a8e7929b7a3356c3c"),input=dict(codeIndex=codeIndex,codeData=codeData))
 encode_params = ParamsOfEncodeMessage(
             abi=roottoken_abi, signer=Signer.Keys(keypair_NFTowner), deploy_set=deploy_set,
             call_set=call_set)
@@ -88,10 +106,10 @@ print("RootToken:",NFTToken_adr)
 
 # Mint token
 call_set = CallSet(
-            function_name='mintNft',
-            header=FunctionHeader(pubkey=keypair_NFTowner.public),input=dict(metadata=json.loads(dict(name="Name"))))
+            function_name='mintNFT',
+            header=FunctionHeader(pubkey=keypair_controller1.public),input=dict(rootNFT=NFTToken_adr,metadata=json.dumps(dict(name="Name")).encode("utf-8").hex()))
 encode_params = ParamsOfEncodeMessage(
-            abi=roottoken_abi, signer=Signer.Keys(keypair_NFTowner),address=NFTToken_adr,
+            abi=controller_abi, signer=Signer.Keys(keypair_controller1),address=controller1,
             call_set=call_set)
 process_params = ParamsOfProcessMessage(
     message_encode_params=encode_params, send_events=False)
@@ -116,21 +134,7 @@ result = client.processing.process_message(
     params=process_params)
 print("Exchanger:",exchanger_address)
 
-# Deploy Controller1
-call_set = CallSet(
-            function_name='constructor',
-            header=FunctionHeader(pubkey=keypair_controller1.public))
-encode_params = ParamsOfEncodeMessage(
-            abi=controller_abi, signer=Signer.Keys(keypair_controller1), deploy_set=deploy_set_controller,
-            call_set=call_set)
-encoded = client.abi.encode_message(params=encode_params)
-controller1 = encoded.address
-send_grams(address=controller1)
-process_params = ParamsOfProcessMessage(
-    message_encode_params=encode_params, send_events=False)
-result = client.processing.process_message(
-    params=process_params)
-print("Controller1:",controller1)
+
 
 # Create ton wallet
 
