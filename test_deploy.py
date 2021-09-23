@@ -135,16 +135,3 @@ result = client.processing.process_message(
 print("Exchanger:",exchanger_address)
 
 
-
-# Create ton wallet
-
-call_set = CallSet(
-            function_name='deployNFT',
-            header=FunctionHeader(pubkey=keypair_controller1.public),input=dict(root_token=NFTToken_adr))
-encode_params = ParamsOfEncodeMessage(
-            abi=controller_abi, signer=Signer.Keys(keypair_controller1), address=controller1,
-            call_set=call_set)
-process_params = ParamsOfProcessMessage(
-    message_encode_params=encode_params, send_events=False)
-result = client.processing.process_message(
-    params=process_params)
