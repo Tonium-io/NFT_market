@@ -1,5 +1,6 @@
 {
 	"ABI version": 2,
+	"version": "2.1",
 	"header": ["pubkey", "time", "expire"],
 	"functions": [
 		{
@@ -29,6 +30,7 @@
 			"inputs": [
 				{"name":"price","type":"uint128"},
 				{"name":"time","type":"uint64"},
+				{"name":"client","type":"address"},
 				{"name":"pubkey","type":"uint256"}
 			],
 			"outputs": [
@@ -40,6 +42,7 @@
 				{"name":"price","type":"uint128"},
 				{"name":"time","type":"uint64"},
 				{"name":"step","type":"uint128"},
+				{"name":"client","type":"address"},
 				{"name":"pubkey","type":"uint256"}
 			],
 			"outputs": [
@@ -146,5 +149,19 @@
 			"outputs": [
 			]
 		}
+	],
+	"fields": [
+		{"name":"_pubkey","type":"uint256"},
+		{"name":"_timestamp","type":"uint64"},
+		{"name":"_constructorFlag","type":"bool"},
+		{"name":"timestamp","type":"uint32"},
+		{"name":"name","type":"bytes"},
+		{"name":"commission","type":"uint128"},
+		{"name":"highest_commission","type":"uint256"},
+		{"name":"pair_code","type":"cell"},
+		{"name":"auction_code","type":"cell"},
+		{"name":"pairs","type":"map(address,uint8)"},
+		{"name":"time_limit","type":"uint64"},
+		{"name":"withdraw_address","type":"address"}
 	]
 }

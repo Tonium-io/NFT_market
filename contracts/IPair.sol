@@ -6,5 +6,5 @@ interface BasePair {
     function approveSell() external;
     function pre_finish() external;
     function finish() external;
-    function sell(uint256 pubkey) external;
+    function sell(address client) external;
 }

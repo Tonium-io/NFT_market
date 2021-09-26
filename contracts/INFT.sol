@@ -1,4 +1,5 @@
-pragma ton-solidity >= 0.35.0;
+pragma ton-solidity >= 0.43.0;
+
 interface IData {
     function transferOwnership(address addrTo) external;
 
@@ -7,6 +8,7 @@ interface IData {
         address addrRoot,
         address addrOwner,
         address addrData,
+        bytes nameRoot,
         bytes metadata
     );
 }

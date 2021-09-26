@@ -224,7 +224,7 @@ class TestPair(unittest.TestCase):
 
         }
         # Create root token
-        NFTtoken = ts4.BaseContract('NftRoot',constructor,pubkey=self.public,private_key=self.secret,nickname="NFT root token") 
+        NFTtoken = ts4.BaseContract('NftRoot',constructor,pubkey=self.public,private_key=self.secret,nickname="NFT root token",initial_data=dict(_addrOwner=Controller0.addr,_name=ts4.Bytes("5423"))) 
 
         ts4.dispatch_messages()
         # Mint token for granting
@@ -251,11 +251,12 @@ class TestPair(unittest.TestCase):
         # Get token addr
         num = NFTtoken.call_getter("_totalMinted",dict())
         print(num)
-        addr = NFTtoken.call_getter("resolveData",dict(addrRoot=NFTtoken.addr,id=num - 1))
+        addr = NFTtoken.call_getter("resolveData",dict(addrRoot=NFTtoken.addr,id=num - 1,name=ts4.Bytes("5423")))
         print(addr)
         # Send token to pair
         Controller0.call_method("transferOwnership",dict(dataNFT=addr,addrTo=pair.addr),private_key=self.secret)
         ts4.dispatch_messages()
+        pair.call_method("addNewToken",dict(token_addr=addr),private_key=self.secret)
         # Approve sell
         pair.call_method("approveSell",private_key=self.secret)
         ts4.dispatch_messages()

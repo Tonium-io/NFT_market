@@ -9,13 +9,7 @@ import "./INFT.sol";
 contract Controller is BaseContoller{
     // Errors
     uint constant ACCESS_DENIED = 101;
-    uint constant NOT_ENOUGH_MONEY = 102;
-
     uint public client;
-    uint public lockedMoney = 0;
-    address[] public root_wallets;
-    address[] public wallets;
-    mapping(address => address) public m_wallets;
 
     modifier onlyClient {
         require(msg.pubkey() == client,
@@ -24,19 +18,7 @@ contract Controller is BaseContoller{
         _;
     }
 
-    modifier onlyExchanger {
-        require(msg.pubkey() == tvm.pubkey(),
-            ACCESS_DENIED);
-        tvm.accept();
-        _;
-    }
 
-    modifier onlyRootWallets {
-        require(search(root_wallets,msg.sender),ACCESS_DENIED);
-        tvm.accept();
-        _;
-    }
-    
 
     constructor() public {
         require(tvm.pubkey() != 0, 101);
@@ -55,7 +37,7 @@ contract Controller is BaseContoller{
     }
 
     function buyNFT(address pair, uint128 price) onlyClient public{
-        BasePair(pair).sell{value:price,bounce:true}(client);
+        BasePair(pair).sell{value:price,bounce:true}(address(this));
     }
 
     function mintNFT(address rootNFT,bytes metadata) onlyClient public {
@@ -72,10 +54,10 @@ contract Controller is BaseContoller{
        dest.transfer(amount, bounce, 0);
     }
     function createNFTPair(address exchanger, uint128 price, uint64 time) onlyClient public {
-        BaseExchanger(exchanger).createNFTPairCrystall{value:5 ton,flag:1}(price,time,client);
+        BaseExchanger(exchanger).createNFTPairCrystall{value:5 ton,flag:1}(price,time,address(this),client);
     }
     function createNFTAuction(address exchanger, uint128 price, uint64 time, uint128 step) onlyClient public {
-        BaseExchanger(exchanger).createNFTAuctionCrystall{value:5 ton,flag:1}(price,time,step,client);
+        BaseExchanger(exchanger).createNFTAuctionCrystall{value:5 ton,flag:1}(price,time,step,address(this),client);
     }
     function setCode(TvmCell newcode) public onlyClient {
 		tvm.setcode(newcode);

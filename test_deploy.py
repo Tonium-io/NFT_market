@@ -7,7 +7,7 @@ from tonclient.test.test_abi import SAMPLES_DIR
 from tonclient.test.helpers import send_grams
 from tonclient.types import Abi, DeploySet, CallSet, Signer, FunctionHeader, \
     ParamsOfEncodeMessage, ParamsOfProcessMessage, ProcessingResponseType, \
-    ProcessingEvent, ParamsOfSendMessage, ParamsOfWaitForTransaction, ClientConfig, BuilderOp, NetworkConfig, ParamsOfRunGet, ParamsOfQuery
+    ProcessingEvent, ParamsOfSendMessage, ParamsOfWaitForTransaction, ClientConfig, BuilderOp, NetworkConfig, ParamsOfRunGet, ParamsOfQuery, ParamsOfGetCodeFromTvc
 
 
 client = TonClient(config=ClientConfig(network=NetworkConfig(server_address='https://net.ton.dev')))
@@ -56,18 +56,17 @@ with open('contracts/NFTPair.tvc', 'rb') as fp:
 with open('contracts/NFTAuction.tvc', 'rb') as fp:     
     nftauction_code =  base64.b64encode(fp.read()).decode()
 with open('./true-nft/components/true-nft-core/build/Index.tvc', 'rb') as fp:     
-    codeIndex =  base64.b64encode(fp.read()).decode()
+    codeIndex =  client.boc.get_code_from_tvc(
+            params=ParamsOfGetCodeFromTvc(tvc=base64.b64encode(fp.read()).decode()))
 with open('./true-nft/components/true-nft-core/build/Data.tvc', 'rb') as fp:     
-    codeData =  base64.b64encode(fp.read()).decode()
+    codeData =  client.boc.get_code_from_tvc(
+            params=ParamsOfGetCodeFromTvc(tvc=base64.b64encode(fp.read()).decode()))
 with open('contracts/Exchanger.tvc', 'rb') as fp:     
     deploy_set_exchanger = DeploySet(tvc=base64.b64encode(fp.read()).decode())
 
 with open('contracts/Controller.tvc', 'rb') as fp:     
     deploy_set_controller = DeploySet(tvc=base64.b64encode(fp.read()).decode())
 
-
-with open('true-nft/components/true-nft-core/build/NftRoot.tvc', 'rb') as fp:     
-    deploy_set = DeploySet(tvc=base64.b64encode(fp.read()).decode(),initial_data=dict(randomKey=123)) 
 
 
 # Deploy Controller1
@@ -86,11 +85,16 @@ result = client.processing.process_message(
     params=process_params)
 print("Controller1:",controller1)
 
+
+with open('true-nft/components/true-nft-core/build/NftRoot.tvc', 'rb') as fp:     
+    deploy_set = DeploySet(tvc=base64.b64encode(fp.read()).decode(),initial_data=dict(_name="5423",_addrOwner=controller1)) 
+
+
 # Deploy nft token
 print(keypair_NFTowner.public)
 call_set = CallSet(
             function_name='constructor',
-            header=FunctionHeader(pubkey="96b4ef547a294160e3d6c937d891b8cb914952980a65333a8e7929b7a3356c3c"),input=dict(codeIndex=codeIndex,codeData=codeData))
+            header=FunctionHeader(pubkey=keypair_NFTowner.public),input=dict(codeIndex=codeIndex.code,codeData= codeData.code))
 encode_params = ParamsOfEncodeMessage(
             abi=roottoken_abi, signer=Signer.Keys(keypair_NFTowner), deploy_set=deploy_set,
             call_set=call_set)

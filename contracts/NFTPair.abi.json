@@ -1,5 +1,6 @@
 {
 	"ABI version": 2,
+	"version": "2.1",
 	"header": ["pubkey", "time", "expire"],
 	"functions": [
 		{
@@ -12,7 +13,7 @@
 		{
 			"name": "sell",
 			"inputs": [
-				{"name":"pubkey","type":"uint256"}
+				{"name":"client","type":"address"}
 			],
 			"outputs": [
 			]
@@ -95,14 +96,6 @@
 			]
 		},
 		{
-			"name": "receiver_pubkey",
-			"inputs": [
-			],
-			"outputs": [
-				{"name":"receiver_pubkey","type":"uint256"}
-			]
-		},
-		{
 			"name": "finish_time",
 			"inputs": [
 			],
@@ -160,5 +153,22 @@
 		{"key":6,"name":"price","type":"uint128"}
 	],
 	"events": [
+	],
+	"fields": [
+		{"name":"_pubkey","type":"uint256"},
+		{"name":"_timestamp","type":"uint64"},
+		{"name":"_constructorFlag","type":"bool"},
+		{"name":"seller","type":"address"},
+		{"name":"seller_pubkey","type":"uint256"},
+		{"name":"exchanger","type":"address"},
+		{"name":"wallets","type":"address[]"},
+		{"name":"status","type":"uint8"},
+		{"name":"receiver","type":"address"},
+		{"name":"finish_time","type":"uint64"},
+		{"name":"commission","type":"uint128"},
+		{"name":"m_price","type":"uint128"},
+		{"name":"m_wallets","type":"map(address,address)"},
+		{"name":"type_contract","type":"uint8"},
+		{"name":"price","type":"uint128"}
 	]
 }

@@ -31,7 +31,6 @@ abstract contract Pair is BasePair{
     address[] public wallets;
     PairState public status = PairState.created;
     address public receiver; //should be equal to seller on start
-    uint256 public receiver_pubkey;
     uint64 static public finish_time;
     uint128 static public commission;
     uint128 public m_price;
@@ -127,7 +126,7 @@ abstract contract Pair is BasePair{
         BaseExchanger(exchanger).addIndex(PairState.close);
     }
 
-    function sell(uint256 pubkey) override virtual public;
+    function sell(address client) override virtual public;
 
     //Withdraw    
 

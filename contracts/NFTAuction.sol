@@ -10,16 +10,14 @@ contract NFTAuction is Pair {
     constructor () public {
         m_price = price;
         receiver = seller;
-        receiver_pubkey = seller_pubkey;
     }
 
-    function sell(uint256 pubkey) override public onlyOpen onlyInTime{
+    function sell(address client) override public onlyOpen onlyInTime{
         require(msg.value >= m_price,NOT_ENOUGH_MONEY);
-        require(pubkey != 0, 102);
+        require(!client.isNone(), 102);
         tvm.commit();
         if (seller != receiver) {receiver.transfer(m_price - step,false,0);}
-        receiver = msg.sender;
-        receiver_pubkey = pubkey;
+        receiver = client;
         m_price = msg.value + step;
     }
 }

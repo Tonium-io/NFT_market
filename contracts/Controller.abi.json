@@ -1,5 +1,6 @@
 {
 	"ABI version": 2,
+	"version": "2.1",
 	"header": ["pubkey", "time", "expire"],
 	"functions": [
 		{
@@ -82,42 +83,16 @@
 			"outputs": [
 				{"name":"client","type":"uint256"}
 			]
-		},
-		{
-			"name": "lockedMoney",
-			"inputs": [
-			],
-			"outputs": [
-				{"name":"lockedMoney","type":"uint256"}
-			]
-		},
-		{
-			"name": "root_wallets",
-			"inputs": [
-			],
-			"outputs": [
-				{"name":"root_wallets","type":"address[]"}
-			]
-		},
-		{
-			"name": "wallets",
-			"inputs": [
-			],
-			"outputs": [
-				{"name":"wallets","type":"address[]"}
-			]
-		},
-		{
-			"name": "m_wallets",
-			"inputs": [
-			],
-			"outputs": [
-				{"name":"m_wallets","type":"map(address,address)"}
-			]
 		}
 	],
 	"data": [
 	],
 	"events": [
+	],
+	"fields": [
+		{"name":"_pubkey","type":"uint256"},
+		{"name":"_timestamp","type":"uint64"},
+		{"name":"_constructorFlag","type":"bool"},
+		{"name":"client","type":"uint256"}
 	]
 }
