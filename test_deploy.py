@@ -84,14 +84,14 @@ process_params = ParamsOfProcessMessage(
 result = client.processing.process_message(
     params=process_params)
 print("Controller1:",controller1)
-
+print(keypair_controller1.public,keypair_controller1.secret)
 
 with open('true-nft/components/true-nft-core/build/NftRoot.tvc', 'rb') as fp:     
     deploy_set = DeploySet(tvc=base64.b64encode(fp.read()).decode(),initial_data=dict(_name="5423",_addrOwner=controller1)) 
 
 
 # Deploy nft token
-print(keypair_NFTowner.public)
+#print(keypair_NFTowner.public)
 call_set = CallSet(
             function_name='constructor',
             header=FunctionHeader(pubkey=keypair_NFTowner.public),input=dict(codeIndex=codeIndex.code,codeData= codeData.code))
