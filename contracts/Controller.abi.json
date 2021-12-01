@@ -32,7 +32,6 @@
 			"name": "generateNFT",
 			"inputs": [
 				{"name":"rootNFT","type":"address"},
-				{"name":"metadata","type":"bytes"},
 				{"name":"value","type":"uint128"}
 			],
 			"outputs": [
