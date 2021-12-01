@@ -1,6 +1,6 @@
 {
 	"ABI version": 2,
-	"version": "2.1",
+	"version": "2.2",
 	"header": ["pubkey", "time", "expire"],
 	"functions": [
 		{
@@ -24,6 +24,16 @@
 			"inputs": [
 				{"name":"rootNFT","type":"address"},
 				{"name":"metadata","type":"bytes"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "generateNFT",
+			"inputs": [
+				{"name":"rootNFT","type":"address"},
+				{"name":"metadata","type":"bytes"},
+				{"name":"value","type":"uint128"}
 			],
 			"outputs": [
 			]

@@ -20,7 +20,6 @@ contract exchanger is BaseExchanger {
     uint constant TIME_LIMIT = 109;
 
     //Fields
-    uint32 public timestamp;
     bytes public name;
     uint128 public commission;
     uint public highest_commission;
@@ -77,6 +76,28 @@ contract exchanger is BaseExchanger {
         address adr = new NFTAuction{code:auction_code,value:1.5 ton, pubkey: pubkey,varInit: {finish_time: time,seller:client,seller_pubkey:pubkey,commission:commission, exchanger: address(this),price:price,step:step}}();
         emit pair_change_status(adr,PairState.created);
         pairs[adr] = PairState.created;
+    }
+
+    function resolveNFTPair(uint128 price, uint64 time, address client, uint256 pubkey) public returns(address addrData) {
+        TvmCell state = tvm.buildStateInit({
+            contr: NFTPair,
+            pubkey: pubkey,
+            varInit: {finish_time: time,seller:client,seller_pubkey:pubkey,commission:commission, exchanger: address(this), price:price},
+            code: pair_code
+        });
+        uint256 hashState = tvm.hash(state);
+        addrData = address.makeAddrStd(0, hashState);
+    }
+
+    function resolveNFTAuction(uint128 price, uint64 time, uint128 step, address client, uint256 pubkey) public returns(address addrData) {
+        TvmCell state = tvm.buildStateInit({
+            contr: NFTAuction,
+            pubkey: pubkey,
+            varInit: {finish_time: time,seller:client,seller_pubkey:pubkey,commission:commission, exchanger: address(this), price:price,step:step},
+            code: pair_code
+        });
+        uint256 hashState = tvm.hash(state);
+        addrData = address.makeAddrStd(0, hashState);
     }
 
     function addIndex(PairState status) override public{

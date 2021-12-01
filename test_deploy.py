@@ -28,6 +28,9 @@ def send_grams(address: str):
         message_encode_params=encode_params, send_events=False)
     client.processing.process_message(params=process_params)
 
+#send_grams("0:98bcccbabd0dd44bd1532ef16dbe6bd33eb4f553fcc1ba97efa5ea742e7844d2")
+#print("send")
+
 keypair_exchanger = client.crypto.generate_random_sign_keys()
 keypair_controller1 = client.crypto.generate_random_sign_keys()
 keypair_controller2 = client.crypto.generate_random_sign_keys()
@@ -109,17 +112,18 @@ result = client.processing.process_message(
 print("RootToken:",NFTToken_adr)
 
 # Mint token
-call_set = CallSet(
-            function_name='mintNFT',
-            header=FunctionHeader(pubkey=keypair_controller1.public),input=dict(rootNFT=NFTToken_adr,metadata=json.dumps(dict(name="Name")).encode("utf-8").hex()))
-encode_params = ParamsOfEncodeMessage(
-            abi=controller_abi, signer=Signer.Keys(keypair_controller1),address=controller1,
-            call_set=call_set)
-process_params = ParamsOfProcessMessage(
-    message_encode_params=encode_params, send_events=False)
-result = client.processing.process_message(
-    params=process_params)
-print('mint nft')
+for i in range(5):
+    call_set = CallSet(
+                function_name='mintNFT',
+                header=FunctionHeader(pubkey=keypair_controller1.public),input=dict(rootNFT=NFTToken_adr,metadata=json.dumps(dict(name="Name")).encode("utf-8").hex()))
+    encode_params = ParamsOfEncodeMessage(
+                abi=controller_abi, signer=Signer.Keys(keypair_controller1),address=controller1,
+                call_set=call_set)
+    process_params = ParamsOfProcessMessage(
+        message_encode_params=encode_params, send_events=False)
+    result = client.processing.process_message(
+        params=process_params)
+    print('mint nft')
 
 # Deploy exchanger
 call_set = CallSet(

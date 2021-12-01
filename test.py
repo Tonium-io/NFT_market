@@ -248,6 +248,8 @@ class TestPair(unittest.TestCase):
         ts4.ensure_address(a)
         pair = ts4.BaseContract('NFTPair',dict(_price=1_000_000_000,_time=_time,_seller=Controller0.address,_seller_pubkey=self.public,_commission=EXCHANGER_COMMISSION,_exchanger_address=Exchanger.address),pubkey=self.public,address=a,nickname="Pair")
         ts4.dispatch_messages()
+        test = Exchanger.call_getter("resolveNFTPair",dict(price=1_000_000_000,time=_time,client=Controller0.address,pubkey=self.public))
+        print("ResolveNFTPair",test)
         # Get token addr
         num = NFTtoken.call_getter("_totalMinted",dict())
         print(num)
