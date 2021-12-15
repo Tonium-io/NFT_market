@@ -38,6 +38,10 @@ class TestPair(unittest.TestCase):
         ts4.dispatch_messages()
         # deGenerate
         deGenerateContract.call_method_signed("sendMetadata",dict(adr=NFTtoken.addr,metadata=ts4.Bytes("1234")))
+        deGenerateContract.call_method_signed("sendMetadata",dict(adr=NFTtoken.addr,metadata=ts4.Bytes("1234")))
+
+        ts4.dispatch_messages()
+        deGenerateContract.call_method_signed("startSelling",dict(adr=NFTtoken.addr,metadata=ts4.Bytes("1234")))
         ts4.dispatch_messages()
         # Mint token for granting
         Controller0.call_method("generateNFT",dict(metadata=ts4.Bytes("5423"),rootNFT=NFTtoken.addr,value=1_500_000_000),private_key=self.secret)
